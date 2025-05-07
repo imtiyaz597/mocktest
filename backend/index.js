@@ -79,7 +79,7 @@ app.post("/api/auth/forgot-password", async (req, res) => {
     await PasswordReset.create({ email, token, expiresAt });
     console.log("[FORGOT PASSWORD] Password reset token created for:", email);
 
-    const resetLink = `https://mock-full-stack-2.onrender.com/reset-password/${token}`;
+    const resetLink = `https://mocktest-l6sr.onrender.com/reset-password/${token}`;
     console.log("Reset Link:", resetLink);
 
     // ✅ Send response immediately
