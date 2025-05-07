@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const REACT_APP_API_URL = "https://full-stack-mocktest.onrender.com"
+const REACT_APP_API_URL = "https://mocktest-l6sr.onrender.com"
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");

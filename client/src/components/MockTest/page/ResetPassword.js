@@ -49,7 +49,7 @@ const ResetPassword = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false); // 👈 Track success
 
-  const REACT_APP_API_URL = "https://full-stack-mocktest.onrender.com"
+  const REACT_APP_API_URL = "https://mocktest-l6sr.onrender.com"
 
   const handleSubmit = async (e) => {
     e.preventDefault();
