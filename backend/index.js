@@ -15,6 +15,8 @@ const app = express();
 // ✅ CORS setup
 const allowedOrigins = ['https://mocktest-1.onrender.com', 'https://mocktest-phi.vercel.app'];  // add your production frontend domain here
 
+// const allowedOrigins = ['http://localhost:3000', 'https://mocktest-1.onrender.com'];
+
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
