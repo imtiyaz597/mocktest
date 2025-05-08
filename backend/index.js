@@ -13,7 +13,7 @@ const nodemailer = require("nodemailer");
 
 const app = express();
 // ✅ CORS setup
-const allowedOrigins = ['http://localhost:3000', 'https://mocktest-l6sr.onrender.com'];  // add your production frontend domain here
+const allowedOrigins = ['http://localhost:3000', 'https://mocktest-1.onrender.com'];  // add your production frontend domain here
 
 app.use(cors({
   origin: function (origin, callback) {
@@ -92,7 +92,7 @@ app.post("/api/auth/forgot-password", async (req, res) => {
     await PasswordReset.create({ email, token, expiresAt });
     console.log("[FORGOT PASSWORD] Password reset token created for:", email);
 
-    const resetLink = `https://mocktest-l6sr.onrender.com/reset-password/${token}`;
+    const resetLink = `https://mocktest-1.onrender.com/reset-password/${token}`;
     console.log("[FORGOT PASSWORD] Reset Link:", resetLink);
 
     console.log("[FORGOT PASSWORD] EMAIL_USER:", process.env.EMAIL_USER);

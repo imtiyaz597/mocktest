@@ -82,7 +82,7 @@ const ResetPassword = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  const REACT_APP_API_URL = "https://mocktest-l6sr.onrender.com";
+  const REACT_APP_API_URL = "https://mocktest-1.onrender.com";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
