@@ -59,7 +59,6 @@ const verifyRole = (roles) => (req, res, next) => {
 };
 
 
-// forgot password 
 app.post("/api/auth/forgot-password", async (req, res) => {
   const { email } = req.body;
 
@@ -67,9 +66,11 @@ app.post("/api/auth/forgot-password", async (req, res) => {
 
   try {
     const user = await User.findOne({ email });
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user) {
+      console.log("[FORGOT PASSWORD] User not found:", email);
+      return res.status(404).json({ message: "User not found" });
+    }
 
-    // Clear previous tokens
     await PasswordReset.deleteMany({ email });
     console.log("[FORGOT PASSWORD] Previous tokens cleared for:", email);
 
@@ -80,55 +81,56 @@ app.post("/api/auth/forgot-password", async (req, res) => {
     console.log("[FORGOT PASSWORD] Password reset token created for:", email);
 
     const resetLink = `https://mocktest-l6sr.onrender.com/reset-password/${token}`;
-    console.log("Reset Link:", resetLink);
+    console.log("[FORGOT PASSWORD] Reset Link:", resetLink);
 
-    // ✅ Send response immediately
-    res.json({ message: "Password reset link sent to your email" });
+    console.log("[FORGOT PASSWORD] EMAIL_USER:", process.env.EMAIL_USER);
+    console.log("[FORGOT PASSWORD] EMAIL_PASS:", process.env.EMAIL_PASS);
 
-    // ✅ Continue sending email in the background
-    setImmediate(() => {
-      console.log("EMAIL_USER:", process.env.EMAIL_USER);
-      console.log("EMAIL_PASS:", process.env.EMAIL_PASS);
-    
-      const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS,
-        },
-      });
-    
-      const mailOptions = {
-        from: `"Edzest Education" <${process.env.EMAIL_USER}>`,
-        to: email,
-        subject: "Reset your password",
-        html: `
-          <p>Hello ${user.name || ""},</p>
-          <p>You requested to reset your password.</p>
-          <p>Click the link below to reset it. This link is valid for 1 hour:</p>
-          <a href="${resetLink}" target="_blank">${resetLink}</a>
-          <br/><br/>
-          <p>If you did not request this, you can ignore this email.</p>
-        `,
-      };
-    
-      transporter.sendMail(mailOptions)
-        .then((info) => {
-          console.log("[FORGOT PASSWORD] Reset email sent successfully:", info.response);
-        })
-        .catch((err) => {
-          console.error("[FORGOT PASSWORD] Error sending reset email:", err);
-          if (err.response) {
-            console.error("[FORGOT PASSWORD] SMTP response:", err.response);
-          }
-        });
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
     });
+
+    const mailOptions = {
+      from: `"Edzest Education" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: "Reset your password",
+      html: `
+        <p>Hello ${user.name || ""},</p>
+        <p>You requested to reset your password.</p>
+        <p>Click the link below to reset it. This link is valid for 1 hour:</p>
+        <a href="${resetLink}" target="_blank">${resetLink}</a>
+        <br/><br/>
+        <p>If you did not request this, you can ignore this email.</p>
+      `,
+    };
+
+    try {
+      const info = await transporter.sendMail(mailOptions);
+      console.log("[FORGOT PASSWORD] Reset email sent successfully:", info.response);
+
+      // ✅ only send success response if email is sent
+      return res.json({ message: "Password reset link sent to your email" });
+
+    } catch (emailErr) {
+      console.error("[FORGOT PASSWORD] Error sending reset email:", emailErr);
+      if (emailErr.response) {
+        console.error("[FORGOT PASSWORD] SMTP response:", emailErr.response);
+      }
+      return res.status(500).json({ message: "Failed to send reset email", error: emailErr.message });
+    }
 
   } catch (err) {
     console.error("[FORGOT PASSWORD] General error:", err);
-    res.status(500).json({ message: "Server error" });
+    if (!res.headersSent) {
+      return res.status(500).json({ message: "Server error", error: err.message });
+    }
   }
 });
+
 
 
 
@@ -138,8 +140,9 @@ app.post("/api/auth/reset-password/:token", async (req, res) => {
   const { password } = req.body;
 
   console.log("[RESET PASSWORD] Request received with token:", token);
+
   try {
-    const resetRecord = await PasswordReset.findOne({ token }).lean(); // lean() makes it faster
+    const resetRecord = await PasswordReset.findOne({ token }).lean();
     if (!resetRecord || resetRecord.expiresAt < Date.now()) {
       console.log("[RESET PASSWORD] Invalid or expired token:", token);
       return res.status(400).json({ message: "Token is invalid or expired" });
@@ -151,30 +154,66 @@ app.post("/api/auth/reset-password/:token", async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // ✅ Respond quickly
-    res.json({ message: "Password has been reset successfully" });
+    console.log(`[RESET PASSWORD] Found user: ${user.email}, updating password...`);
 
-    // ✅ Process the password reset in background
-    setImmediate(async () => {
-      try {
-        const hashedPassword = await bcrypt.hash(password, 10);
-        user.password = hashedPassword;
-        await user.save();
-        await PasswordReset.deleteMany({ email: resetRecord.email });
-        console.log(`Password updated for ${user.email}`);
-      } catch (innerErr) {
-        console.error("Error in background password update:", innerErr);
-      }
+    const hashedPassword = await bcrypt.hash(password, 10);
+    user.password = hashedPassword;
+    await user.save();
+    await PasswordReset.deleteMany({ email: resetRecord.email });
+    console.log(`[RESET PASSWORD] Password updated and reset tokens cleared for ${user.email}`);
+
+    console.log("EMAIL_USER:", process.env.EMAIL_USER);
+    console.log("EMAIL_PASS:", process.env.EMAIL_PASS);
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
     });
+
+    const mailOptions = {
+      from: `"Edzest Education" <${process.env.EMAIL_USER}>`,
+      to: user.email,
+      subject: "Your password has been reset",
+      html: `
+        <p>Hello ${user.name || ""},</p>
+        <p>Your password has been successfully reset.</p>
+        <p>If you did not perform this action, please contact support immediately.</p>
+      `,
+    };
+
+    try {
+      const info = await transporter.sendMail(mailOptions);
+      console.log("[RESET PASSWORD] Confirmation email sent successfully:", info.response);
+
+      // ✅ Only send success if email sent
+      return res.json({ message: "Password has been reset successfully, confirmation email sent." });
+
+    } catch (emailErr) {
+      console.error("[RESET PASSWORD] Error sending confirmation email:", emailErr);
+      if (emailErr.response) {
+        console.error("[RESET PASSWORD] SMTP response:", emailErr.response);
+      }
+
+      // ✅ Send error response if email fails
+      return res.status(500).json({
+        message: "Password reset succeeded, but failed to send confirmation email.",
+        error: emailErr.message,
+      });
+    }
 
   } catch (err) {
     console.error("Reset password error:", err);
-    // Only respond with 500 if response hasn't been sent yet
     if (!res.headersSent) {
-      res.status(500).json({ message: "Server error" });
+      res.status(500).json({ message: "Server error", error: err.message });
     }
   }
 });
+
+
+
 
 
 
