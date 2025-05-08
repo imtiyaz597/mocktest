@@ -13,7 +13,7 @@ const nodemailer = require("nodemailer");
 
 const app = express();
 // ✅ CORS setup
-const allowedOrigins = ['http://localhost:3000', 'https://mocktest-1.onrender.com'];  // add your production frontend domain here
+const allowedOrigins = ['https://mocktest-1.onrender.com', 'https://mocktest-phi.vercel.app'];  // add your production frontend domain here
 
 app.use(cors({
   origin: function (origin, callback) {
