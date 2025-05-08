@@ -12,7 +12,19 @@ const nodemailer = require("nodemailer");
 
 
 const app = express();
-app.use(cors());
+// ✅ CORS setup
+const allowedOrigins = ['http://localhost:3000', 'https://mocktest-l6sr.onrender.com'];  // add your production frontend domain here
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+}));
 // ✅ Increase body size limit for large uploads (e.g., Excel, image)
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
