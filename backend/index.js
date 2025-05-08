@@ -25,6 +25,16 @@ app.use(cors({
   },
   credentials: true,
 }));
+
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true,
+}));
+
+
+// ✅ explicitly handle OPTIONS requests to avoid CORS preflight issues
+app.options('*', cors());
+
 // ✅ Increase body size limit for large uploads (e.g., Excel, image)
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
