@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ExamContentLayoutForSolution from "../Layout/ExamContentLayoutForSolution";
 
-const REACT_APP_API_URL = "https://full-stack-mocktest.onrender.com"
+const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
 
 const SolutionPage = () => {
   const { resultId } = useParams();

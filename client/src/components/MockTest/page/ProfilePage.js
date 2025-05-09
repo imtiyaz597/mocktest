@@ -583,7 +583,7 @@ import StudentSidebar from "./StudentSidebar";
 import TeacherSidebar from "./TeacherSidebar";
 import MockSidebar from "./MockSidebar";
 
-const REACT_APP_API_URL = "https://full-stack-mocktest.onrender.com";
+const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
 
 const ProfilePage = () => {
   const [user, setUser] = useState(null);

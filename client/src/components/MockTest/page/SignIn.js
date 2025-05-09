@@ -3,7 +3,7 @@
     import { AuthContext } from "../context/AuthContext"; // Import AuthContext
     import "bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap
 
-    const REACT_APP_API_URL = "https://full-stack-mocktest.onrender.com"
+    const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
 
     const SignIn = () => {
         const [email, setEmail] = useState("");

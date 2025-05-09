@@ -4,7 +4,7 @@ import * as XLSX from "xlsx";
 import "./AddUserForm.css";
 
 
-const REACT_APP_API_URL = "https://full-stack-mocktest.onrender.com"
+const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
 
 const AddUserForm = () => {
   const [formData, setFormData] = useState({

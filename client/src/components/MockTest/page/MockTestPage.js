@@ -873,7 +873,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../MockTestPage.css";
 import LoadingAnimation from "../../LoadingAnimation";
 
-const REACT_APP_API_URL = "https://full-stack-mocktest.onrender.com";
+const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
 
 const MockTests = () => {
   const { user } = useContext(AuthContext);

@@ -222,7 +222,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import ExamContentLayout from "./ExamContentLayout";
 
- const REACT_APP_API_URL = "https://full-stack-mocktest.onrender.com"
+const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
 
 const ExamContent = ({
   test,

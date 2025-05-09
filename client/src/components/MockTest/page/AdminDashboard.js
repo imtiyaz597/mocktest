@@ -4,7 +4,9 @@ import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import MockSidebar from "./MockSidebar";
 import { FaUsers, FaListAlt, FaToggleOn, FaToggleOff } from "react-icons/fa";
- 
+
+const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
+
 // Animated counter hook
 const useCountUp = (target, duration = 1000) => {
   const [count, setCount] = useState(0);
@@ -35,10 +37,10 @@ const AdminDashboard = () => {
       const token = localStorage.getItem("token");
       try {
         const [usersRes, testsRes] = await Promise.all([
-          fetch("https://mock-full-stack-2.onrender.com/api/admin/users", {
+          fetch(`${REACT_APP_API_URL}/api/admin/users`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          fetch("https://mock-full-stack-2.onrender.com/api/admin/mock-tests", {
+          fetch(`${REACT_APP_API_URL}/api/admin/mock-tests`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
         ]);
