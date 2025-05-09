@@ -27,7 +27,8 @@ const allowedOrigins = [
 const corsOptions = {
   origin: function (origin, callback) {
     console.log('Incoming Origin:', origin);
-    if (!origin || allowedOrigins.includes(origin.replace(/\/$/, ''))) {
+    const cleanOrigins = allowedOrigins.map(o => o.replace(/\/$/, '')); // strip trailing slashes
+    if (!origin || cleanOrigins.includes(origin.replace(/\/$/, ''))) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
