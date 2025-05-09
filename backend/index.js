@@ -20,7 +20,7 @@ const app = express();
 const allowedOrigins = [
   'https://mocktest-1.onrender.com',
   'https://mocktest-3gxq.onrender.com',  
-  'https://mocktest-oafs.vercel.app',
+  'https://mocktest-hazel.vercel.app/',
   'http://localhost:3000'
 ];
 
