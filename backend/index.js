@@ -15,7 +15,7 @@ const app = express();
 // ✅ CORS setup
 const allowedOrigins = [
   'https://mocktest-1.onrender.com',
-  'https://mocktest-ui-tybc.onrender.com',
+  'https://mocktest-3gxq.onrender.com/',
   'https://mocktest-s88h.vercel.app',
   'http://localhost:3000'
 ];
