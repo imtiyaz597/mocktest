@@ -13,9 +13,12 @@ const nodemailer = require("nodemailer");
 
 const app = express();
 // ✅ CORS setup
-const allowedOrigins = ['https://mocktest-1.onrender.com','https://mocktest-ui-tybc.onrender.com', 'https://mocktest-s88h.vercel.app/'];  // add your production frontend domain here
-
-// const allowedOrigins = ['http://localhost:3000', 'https://mocktest-1.onrender.com'];
+const allowedOrigins = [
+  'https://mocktest-1.onrender.com',
+  'https://mocktest-ui-tybc.onrender.com',
+  'https://mocktest-s88h.vercel.app',
+  'http://localhost:3000'
+];
 
 app.use(cors({
   origin: function (origin, callback) {
@@ -28,13 +31,6 @@ app.use(cors({
   credentials: true,
 }));
 
-app.use(cors({
-  origin: allowedOrigins,
-  credentials: true,
-}));
-
-
-// ✅ explicitly handle OPTIONS requests to avoid CORS preflight issues
 app.options('*', cors());
 
 // ✅ Increase body size limit for large uploads (e.g., Excel, image)
