@@ -15,12 +15,11 @@ const app = express();
 // ✅ CORS setup
 
 
-const cors = require('cors');
+
 
 const allowedOrigins = [
   'https://mocktest-1.onrender.com',
-  'https://mocktest-3gxq.onrender.com',
-  'https://mocktest-s88h.vercel.app',
+  'https://mocktest-3gxq.onrender.com',  
   'https://mocktest-oafs.vercel.app',
   'http://localhost:3000'
 ];
