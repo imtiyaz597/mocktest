@@ -13,17 +13,19 @@ const nodemailer = require("nodemailer");
 
 const app = express();
 // ✅ CORS setup
+
+
 const cors = require('cors');
 
 const allowedOrigins = [
   'https://mocktest-1.onrender.com',
   'https://mocktest-3gxq.onrender.com',
   'https://mocktest-s88h.vercel.app',
-  'https://mocktest-oafs.vercel.app',  // ✅ ADD THIS LINE
+  'https://mocktest-oafs.vercel.app',
   'http://localhost:3000'
 ];
 
-app.use(cors({
+const corsOptions = {
   origin: function (origin, callback) {
     console.log('Incoming Origin:', origin);
     if (!origin || allowedOrigins.includes(origin.replace(/\/$/, ''))) {
@@ -33,9 +35,11 @@ app.use(cors({
     }
   },
   credentials: true,
-}));
+};
 
-app.options('*', cors());
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // ✅ use SAME options here
+
 
 
 // ✅ Increase body size limit for large uploads (e.g., Excel, image)
