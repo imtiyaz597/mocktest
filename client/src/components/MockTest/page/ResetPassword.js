@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
+const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
+
+
 const ResetPassword = () => {
   const { token } = useParams();
   const navigate = useNavigate();
@@ -10,7 +13,7 @@ const ResetPassword = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false); // 👈 Track success
 
-  const REACT_APP_API_URL = "https://mocktest-1.onrender.com"
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
