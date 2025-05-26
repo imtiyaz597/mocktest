@@ -67,7 +67,11 @@ const formatTime = (seconds) => {
   return `${m}m ${s}s`;
 };
 
-const totalTimeSpent = Object.values(report?.questionTimeSpent || {}).reduce((sum, sec) => sum + sec, 0);
+// ✅ Only sum question-specific times (skip timeLeft, currentQuestionIndex, etc.)
+const totalTimeSpent = Object.entries(report?.questionTimeSpent || {})
+  .filter(([key]) => !["timeLeft", "currentQuestionIndex"].includes(key))
+  .reduce((sum, [, sec]) => sum + sec, 0);
+
 
 
     return (
