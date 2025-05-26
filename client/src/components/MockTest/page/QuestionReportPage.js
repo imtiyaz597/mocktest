@@ -3,8 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
-// const REACT_APP_API_URL = "https://mocktest-ljru.onrender.com";
-const REACT_APP_API_URL = "http://localhost:3000";
+const REACT_APP_API_URL = "https://mocktest-ljru.onrender.com";
 
 const formatTime = (seconds = 0) => {
   const mins = Math.floor(seconds / 60);
