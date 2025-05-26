@@ -496,6 +496,7 @@ router.get('/results/:id', async (req, res) => {
       difficultyScore,
       questions: enrichedQuestions,
       answers: result?.answers || {},
+      detailedAnswers: result?.detailedAnswers || [], // ✅ ADD THIS
       questionTimeSpent: result?.questionTimeSpent || {}
 
 
