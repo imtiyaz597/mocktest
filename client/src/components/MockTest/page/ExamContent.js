@@ -561,14 +561,15 @@ const handleFinishTest = async () => {
     }
   };
 
-  try {
-    // ✅ Flush current question's time before final submission
-    const currentQId = realQuestions[currentQuestionIndex]?._id || realQuestions[currentQuestionIndex]?.questionNumber;
-    setQuestionTimeSpent((prev) => ({
-      ...prev,
-      [currentQId]: (prev[currentQId] || 0) + timeSpentRef.current
-    }));
+  // ✅ Update current question's time before submission
+  const currentQId = realQuestions[currentQuestionIndex]?._id || realQuestions[currentQuestionIndex]?.questionNumber;
+  const updatedTimeSpent = {
+    ...questionTimeSpent,
+    [currentQId]: (questionTimeSpent?.[currentQId] || 0) + timeSpentRef.current,
+  };
+  timeSpentRef.current = 0; // reset after use
 
+  try {
     const detailedAnswers = Object.entries(answers).map(([questionId, answerObj]) => {
       const originalQ = realQuestions.find(
         q => (q._id?.toString() === questionId || q.questionNumber?.toString() === questionId)
@@ -602,7 +603,7 @@ const handleFinishTest = async () => {
       markedForReviewMap: markedForReview,
       questionStatusMap: questionStatus,
       detailedAnswers,
-      questionTimeSpent // ✅ now includes last question too
+      questionTimeSpent: updatedTimeSpent, // ✅ includes latest time
     };
 
     console.log("📤 Submitting final payload:", payload);
@@ -613,11 +614,8 @@ const handleFinishTest = async () => {
     toast.success("Test submitted successfully!");
     setLastSubmittedResultId(result.resultId || result._id);
 
-    // 🧹 Optional: clean up local storage
     localStorage.removeItem(timeKey);
     localStorage.removeItem(pauseKey);
-
-    // ✅ Mark as completed to stop auto-save
     setStatus('completed');
     sessionStorage.setItem("fromSolutionPage", "true");
     navigate(`/test-overview/${test._id || testId}`, { replace: true });
@@ -628,6 +626,7 @@ const handleFinishTest = async () => {
     toast.error(errorMsg);
   }
 };
+
 
 
 

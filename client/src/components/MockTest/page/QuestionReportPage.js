@@ -74,7 +74,14 @@ const QuestionReportPage = () => {
           {detailedAnswers.map((ans, idx) => (
             <tr key={ans.questionId}>
               <td>{idx + 1}</td>
-              <td dangerouslySetInnerHTML={{ __html: questions[idx]?.question || "N/A" }} />
+              <td
+                dangerouslySetInnerHTML={{
+                    __html: typeof questions[idx]?.question === "string"
+                    ? questions[idx]?.question
+                    : JSON.stringify(questions[idx]?.question || "N/A")
+                }}
+                />
+
               <td>
                 {Array.isArray(ans.selectedAnswer)
                     ? ans.selectedAnswer.join(", ")
