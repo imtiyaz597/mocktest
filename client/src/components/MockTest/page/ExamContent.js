@@ -1395,7 +1395,7 @@ const totalMarks = realQuestions?.reduce((sum, q) => sum + (q.marks || 1), 0);
           autoSaveIntervalRef.current = null;
         }
 
-        toast.error("Auto-save failed. Check console for details.");
+        console.error("Auto-save failed. Check console for details.");
       });
   }, 1000);
 
