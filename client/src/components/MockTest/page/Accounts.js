@@ -14,7 +14,7 @@ import {
 } from "react-icons/fa";
 import "./Accounts.css";
 
-const REACT_APP_API_URL = "https://mocktest-ljru.onrender.com";
+const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
 
 const Account = () => {
   const [users, setUsers] = useState([]);
