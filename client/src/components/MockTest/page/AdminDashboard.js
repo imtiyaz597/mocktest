@@ -6,7 +6,7 @@ import MockSidebar from "./MockSidebar";
 import LoadingAnimation from "../../LoadingAnimation";
 import { FaUsers, FaListAlt, FaToggleOn, FaToggleOff } from "react-icons/fa";
  
-const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
+const REACT_APP_API_URL = "https://mocktest-ljru.onrender.com";
  
 // Animated counter hook
 const useCountUp = (target, duration = 1000) => {

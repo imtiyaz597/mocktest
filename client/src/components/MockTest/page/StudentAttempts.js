@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
+const REACT_APP_API_URL = "https://mocktest-ljru.onrender.com";
 
 const StudentAttempts = ({ studentId }) => {
   const [attempts, setAttempts] = useState([]);

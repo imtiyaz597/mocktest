@@ -6,7 +6,7 @@
 // import StudentSidebar from './StudentSidebar';
 // import { AuthContext } from '../context/AuthContext';
 
-// const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
+// const REACT_APP_API_URL = "https://mocktest-ljru.onrender.com";
 
 // const StudentDashboard = () => {
 //   const { user } = useContext(AuthContext);
@@ -287,7 +287,7 @@ import { Chart as ChartJS } from 'chart.js/auto';
 import StudentSidebar from './StudentSidebar';
 import { AuthContext } from '../context/AuthContext';
  
-const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
+const REACT_APP_API_URL = "https://mocktest-ljru.onrender.com";
  
 const StudentDashboard = () => {
   const { user } = useContext(AuthContext);

@@ -2,7 +2,7 @@
 // import { useNavigate, useParams } from "react-router-dom";
 // import axios from "axios";
 
-// const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
+// const REACT_APP_API_URL = "https://mocktest-ljru.onrender.com";
 
 // const FullReportPage = ({
 //   realQuestions = [],
@@ -159,7 +159,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
-const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
+const REACT_APP_API_URL = "https://mocktest-ljru.onrender.com";
 
 const FullReportPage = ({
   realQuestions = [],

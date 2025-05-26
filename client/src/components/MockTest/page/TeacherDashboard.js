@@ -6,7 +6,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import TeacherSidebar from "./TeacherSidebar";
 import { FaUpload } from "react-icons/fa";
 
-const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
+const REACT_APP_API_URL = "https://mocktest-ljru.onrender.com";
 
 const TeacherDashboard = () => {
   const { user } = useContext(AuthContext);

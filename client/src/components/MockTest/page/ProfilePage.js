@@ -6,7 +6,7 @@
 // import TeacherSidebar from "./TeacherSidebar";
 // import { FaCamera } from "react-icons/fa";
 
-// const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
+// const REACT_APP_API_URL = "https://mocktest-ljru.onrender.com";
 
 // const ProfilePage = () => {
 //   const [user, setUser] = useState(null);
@@ -310,7 +310,7 @@ import LoadingAnimation from "../../LoadingAnimation";
 import React, { useEffect, useState } from "react";
  
  
-const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
+const REACT_APP_API_URL = "https://mocktest-ljru.onrender.com";
  
 const ProfilePage = () => {
   const [user, setUser] = useState(null);

@@ -19,7 +19,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../MockTestPage.css";
 import LoadingAnimation from "../../LoadingAnimation";
 
-const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
+const REACT_APP_API_URL = "https://mocktest-ljru.onrender.com";
 const MockTests = () => {
   const { user } = useContext(AuthContext);
   const [mockTestsData, setMockTestsData] = useState([]);

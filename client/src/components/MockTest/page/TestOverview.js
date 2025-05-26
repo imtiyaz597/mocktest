@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AuthContext } from '../context/AuthContext';
 
-const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
+const REACT_APP_API_URL = "https://mocktest-ljru.onrender.com";
 
 const ordinal = (n) => {
   const suffixes = ['First', 'Second', 'Third', 'Fourth', 'Fifth'];

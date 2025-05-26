@@ -112,7 +112,7 @@
 //         };
  
 //         try {
-//             const response = await fetch("${process.env.REACT_APP_API_URL}/api/admin/mock-tests", {
+//             const response = await fetch("${"https://mocktest-ljru.onrender.com"}/api/admin/mock-tests", {
 //                 method: "POST",
 //                 headers: { "Content-Type": "application/json" },
 //                 body: JSON.stringify(formattedMockTest),
@@ -237,7 +237,7 @@ import { AuthContext } from "../context/AuthContext";
 import * as XLSX from "xlsx";
 
 
-const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
+const REACT_APP_API_URL = "https://mocktest-ljru.onrender.com";
 
 
 const CreateMockTest = () => {

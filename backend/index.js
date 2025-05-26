@@ -42,10 +42,27 @@ app.use(cors())
 
 
 // ✅ CORS setup
-app.use(cors({
-  origin: ["http://localhost:3000","https://mocktest-nine.vercel.app"], // adjust to your frontend domain
-  credentials: true,
-}));
+
+
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://mocktest-nine.vercel.app",
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true, // if using cookies/auth headers
+  })
+);
+app.use(cors({ origin: "https://mocktest-nine.vercel.app" }));
+
 
 
 // ✅ Increase body size limit for large uploads (e.g., Excel, image)

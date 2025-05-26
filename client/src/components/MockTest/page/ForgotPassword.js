@@ -61,7 +61,7 @@
 
 import { useState } from "react";
 
-const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
+const REACT_APP_API_URL = "https://mocktest-ljru.onrender.com";
 
 
 const ForgotPassword = () => {

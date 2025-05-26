@@ -99,7 +99,7 @@ import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 import ExamContent from "./ExamContent";
 
-const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
+const REACT_APP_API_URL = "https://mocktest-ljru.onrender.com";
 
 const Exam = () => {
   const { testId } = useParams();
