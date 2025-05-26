@@ -48,6 +48,7 @@ const SolutionPage = () => {
         });
 
         setTest({
+          _id: data._id,
           title: data.testTitle,
           questions: enrichedQuestions,
           time: data.testTime || "--",
@@ -71,6 +72,7 @@ const SolutionPage = () => {
   return (
     <ExamContentLayoutForSolution
       test={test}
+      testId={test._id}
       answers={result.answers}
       currentQuestionIndex={currentQuestionIndex}
       setCurrentQuestionIndex={setCurrentQuestionIndex}
@@ -81,3 +83,8 @@ const SolutionPage = () => {
 };
 
 export default SolutionPage;
+
+
+
+
+

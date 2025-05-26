@@ -209,14 +209,18 @@
 
 
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../../../styles/ExamContentLayout.css";
+
  
 const ExamContentLayoutForSolution = ({
   test,
+  testId,
   answers,
   currentQuestionIndex,
   setCurrentQuestionIndex,
 }) => {
+  const navigate = useNavigate();
   const [showExplanation, setShowExplanation] = useState(false);
  
   const questions = test?.questions || [];
@@ -354,7 +358,17 @@ const ExamContentLayoutForSolution = ({
               {currentQuestionIndex === questions.length - 1 ? (
                 <button
                   className="btn btn-danger"
-                  onClick={() => window.location.href = "/mock-tests"}
+                  onClick={() => {
+                    console.log("✅ Close clicked");
+                    console.log("🧭 test object:", test);
+
+                    if (test?._id) {
+                      console.log("🧭 Navigating to test ID:", test._id);
+                      navigate(`/test-overview/${testId}`);
+                    } else {
+                      alert("Test ID not found. Please try again later.");
+                    }
+                  }}
                 >
                   Close
                 </button>
@@ -372,7 +386,7 @@ const ExamContentLayoutForSolution = ({
             <div className="col-md-5">
               <div className="explanation-panel">
                 <div className="d-flex justify-content-between align-items-center">
-                  <h5><span style={{ color: "#e53935" }}>✖</span> Answer Explanation</h5>
+                  <h5><span style={{ color: "#e53935" }}></span> Answer Explanation</h5>
                   <button className="btn btn-sm btn-light" onClick={() => setShowExplanation(false)}>X</button>
                 </div>
                 <hr />

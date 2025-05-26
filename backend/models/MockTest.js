@@ -42,6 +42,7 @@ const questionSchema = new mongoose.Schema(
       enum: ["Easy", "Medium", "Difficult"],
       default: "Medium",
     },
+    section: { type: String, default: "" },
     marks: { type: Number, default: 1 },
     time: { type: Number, default: 30 },
   },

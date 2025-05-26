@@ -9,37 +9,43 @@ const User = require('./models/User')
 const PasswordReset = require("./models/PasswordReset");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
+const multer = require("multer");  // ✅ ADD THIS LINE
+const upload = multer(); 
 
 
 const app = express();
+app.use(cors())
 // ✅ CORS setup
 
+// const allowedOrigins = [
+//   'https://mocktest-1.onrender.com',
+//   'https://mocktest-3gxq.onrender.com',  
+//   'https://mocktest-hazel.vercel.app/',
+//   'http://localhost:3000'
+// ];
+
+// const corsOptions = {
+//   origin: function (origin, callback) {
+//     console.log('Incoming Origin:', origin);
+//     const cleanOrigins = allowedOrigins.map(o => o.replace(/\/$/, '')); // strip trailing slashes
+//     if (!origin || cleanOrigins.includes(origin.replace(/\/$/, ''))) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error('Not allowed by CORS'));
+//     }
+//   },
+//   credentials: true,
+// };
+
+// app.use(cors(corsOptions));
+// app.options('*', cors(corsOptions)); // ✅ use SAME options here
 
 
-
-const allowedOrigins = [
-  'https://mocktest-1.onrender.com',
-  'https://mocktest-3gxq.onrender.com',  
-  'https://mocktest-hazel.vercel.app/',
-  'http://localhost:3000'
-];
-
-const corsOptions = {
-  origin: function (origin, callback) {
-    console.log('Incoming Origin:', origin);
-    const cleanOrigins = allowedOrigins.map(o => o.replace(/\/$/, '')); // strip trailing slashes
-    if (!origin || cleanOrigins.includes(origin.replace(/\/$/, ''))) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+// ✅ CORS setup
+app.use(cors({
+  origin: "http://localhost:3000", // adjust to your frontend domain
   credentials: true,
-};
-
-app.use(cors(corsOptions));
-app.options('*', cors(corsOptions)); // ✅ use SAME options here
-
+}));
 
 
 // ✅ Increase body size limit for large uploads (e.g., Excel, image)
@@ -107,7 +113,7 @@ app.post("/api/auth/forgot-password", async (req, res) => {
     const expiresAt = Date.now() + 3600000; // 1 hour
 
     await PasswordReset.create({ email, token, expiresAt });
-    console.log("[FORGOT PASSWORD] Password reset token created for:", email);
+    console.log("[FORGOT PASSWORD] Password reset token created for:", email);  
 
     const resetLink = `${process.env.FRONTEND_BASE_URL}/reset-password/${token}`;
     console.log("[FORGOT PASSWORD] Reset Link:", resetLink);
@@ -428,6 +434,41 @@ app.delete("/api/admin/users/:id", verifyToken, verifyRole(["Admin"]), async (re
 });
 
 
+// ✅ Profile update
+app.put("/api/auth/update-profile", verifyToken, async (req, res) => {
+  try {
+    const { phone, dob, location, description, social, profilePhoto } = req.body;
+
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    if (phone) user.phone = phone;
+    if (dob) user.dob = dob;
+    if (location) user.location = location;
+    if (description) user.description = description;
+
+    if (social) {
+      try {
+        user.social = typeof social === "string" ? JSON.parse(social) : social;
+      } catch (err) {
+        return res.status(400).json({ message: "Invalid social data format" });
+      }
+    }
+
+    if (profilePhoto) user.profilePhoto = profilePhoto;  // ✅ directly store base64 string
+
+    await user.save();
+    res.json({ message: "Profile updated successfully", user });
+  } catch (error) {
+    console.error("Profile update error:", error.stack || error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
+
+
+
+
+
 
 const performanceRoutes = require("./routes/admin");
 app.use("/api/performance", performanceRoutes);
@@ -445,6 +486,8 @@ app.use("/", managementRoutes); // Correct route setup
 
 const userTestDataRoutes = require('./routes/userTestData'); 
 app.use('/api', userTestDataRoutes);
+
+
 
 
 // ✅ Start Server

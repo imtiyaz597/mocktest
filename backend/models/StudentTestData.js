@@ -13,8 +13,13 @@ const DetailedAnswerSchema = new mongoose.Schema({
   questionStatus: { type: String, enum: ['ANSWERED', 'NOT ANSWERED', 'MARKED FOR REVIEW', 'ANSWERED & MARKED FOR REVIEW'] }
 }, { _id: false });
 
+
+
+
 const StudentTestDataSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User' },
+  studentName: { type: String }, // ✅ add this field
+  
   testId: { type: String, required: true },
   attemptNumber: { type: Number, required: true },
   answers: { type: Object, required: true },
@@ -23,7 +28,10 @@ const StudentTestDataSchema = new mongoose.Schema({
   status: { type: String, enum: ['in-progress', 'completed'], default: 'in-progress' },
   completedAt: { type: Date },
 
-  // ⬇️ NEW FIELDS TO SUPPORT RICH REPORTING
+  // Rich reporting fields
+  timeLeft: { type: Number, default: null }, // ⏱️ Add this to track remaining time
+currentQuestionIndex: { type: Number, default: 0 },
+
   testTitle: String,
   totalMarks: Number,
   correct: Number,

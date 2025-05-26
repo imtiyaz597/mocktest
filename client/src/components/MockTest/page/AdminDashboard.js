@@ -3,10 +3,11 @@ import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import MockSidebar from "./MockSidebar";
+import LoadingAnimation from "../../LoadingAnimation";
 import { FaUsers, FaListAlt, FaToggleOn, FaToggleOff } from "react-icons/fa";
-
+ 
 const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
-
+ 
 // Animated counter hook
 const useCountUp = (target, duration = 1000) => {
   const [count, setCount] = useState(0);
@@ -125,7 +126,17 @@ const AdminDashboard = () => {
         <h2 className="text-center">Admin Dashboard</h2>
         <p className="text-center text-muted">Manage users, mock tests, and platform statistics</p>
  
-        {loading && <div className="text-center mt-5">Loading data...</div>}
+        {/* 🔄 Loading Animation while data is loading */}
+        {loading && (
+          <div className="d-flex justify-content-center align-items-center mt-5" style={{ minHeight: "150px" }}>
+            <LoadingAnimation />
+            <br/>
+           
+             
+          </div>
+         
+        )}
+ 
         {error && <div className="alert alert-danger text-center">{error}</div>}
  
         {!loading && !error && (

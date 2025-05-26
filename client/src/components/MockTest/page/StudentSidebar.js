@@ -9,23 +9,29 @@ import {
   FaAngleDoubleRight,
   FaSignOutAlt,
 } from "react-icons/fa";
-
-const StudentSidebar = () => {
+ 
+const StudentSidebar = ({ onToggleCollapse }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { logout } = useContext(AuthContext);
   const navigate = useNavigate();
-
-  const toggleSidebar = () => setIsCollapsed(!isCollapsed);
-
+ 
+  const toggleSidebar = () => {
+    const newCollapsedState = !isCollapsed;
+    setIsCollapsed(newCollapsedState);
+    if (onToggleCollapse) {
+      onToggleCollapse(newCollapsedState);
+    }
+  };
+ 
   const handleLogout = () => {
     logout();
     navigate("/signin");
   };
-
+ 
   return (
     <div>
       <div
-        className={`bg-light border-end p-3 sidebar position-fixed d-flex flex-column justify-content-between`}
+        className="bg-light border-end p-3 sidebar position-fixed d-flex flex-column justify-content-between"
         style={{
           width: isCollapsed ? "60px" : "250px",
           height: "100vh",
@@ -66,7 +72,7 @@ const StudentSidebar = () => {
           {!isCollapsed && "Logout"}
         </div>
       </div>
-
+ 
       <div
         className="position-fixed"
         style={{
@@ -82,7 +88,7 @@ const StudentSidebar = () => {
           {isCollapsed ? <FaAngleDoubleRight /> : <FaAngleDoubleLeft />}
         </span>
       </div>
-
+ 
       <style>
         {`
           .sidebar-links .sidebar-link {
@@ -106,5 +112,5 @@ const StudentSidebar = () => {
     </div>
   );
 };
-
+ 
 export default StudentSidebar;
