@@ -43,7 +43,7 @@ app.use(cors())
 
 // ✅ CORS setup
 app.use(cors({
-  origin: "http://localhost:3000", // adjust to your frontend domain
+  origin: ["http://localhost:3000","https://mocktest-nine.vercel.app"], // adjust to your frontend domain
   credentials: true,
 }));
 
