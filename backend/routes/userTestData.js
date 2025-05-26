@@ -495,7 +495,10 @@ router.get('/results/:id', async (req, res) => {
       difficultyStats,
       difficultyScore,
       questions: enrichedQuestions,
-      answers: result?.answers || {}
+      answers: result?.answers || {},
+      questionTimeSpent: result?.questionTimeSpent || {}
+
+
     });
 
   } catch (err) {
