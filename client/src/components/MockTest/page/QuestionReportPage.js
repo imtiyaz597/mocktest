@@ -77,14 +77,19 @@ const QuestionReportPage = () => {
               <td dangerouslySetInnerHTML={{ __html: questions[idx]?.question || "N/A" }} />
               <td>
                 {Array.isArray(ans.selectedAnswer)
-                  ? ans.selectedAnswer.join(", ")
-                  : ans.selectedAnswer || "--"}
-              </td>
-              <td>
+                    ? ans.selectedAnswer.join(", ")
+                    : typeof ans.selectedAnswer === "object" && ans.selectedAnswer !== null
+                    ? JSON.stringify(ans.selectedAnswer)
+                    : ans.selectedAnswer || "--"}
+                </td>
+                <td>
                 {Array.isArray(ans.correctAnswer)
-                  ? ans.correctAnswer.join(", ")
-                  : ans.correctAnswer || "--"}
-              </td>
+                    ? ans.correctAnswer.join(", ")
+                    : typeof ans.correctAnswer === "object" && ans.correctAnswer !== null
+                    ? JSON.stringify(ans.correctAnswer)
+                    : ans.correctAnswer || "--"}
+                </td>
+
               <td style={{ color: ans.isCorrect ? "green" : "red" }}>
                 {ans.isCorrect ? questions[idx]?.marks || 1 : 0}
               </td>

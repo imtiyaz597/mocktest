@@ -476,7 +476,81 @@ const totalMarks = realQuestions?.reduce((sum, q) => sum + (q.marks || 1), 0);
     }
   };
 
-  const handleFinishTest = async () => {
+//   const handleFinishTest = async () => {
+//   const normalizeStatus = (status) => {
+//     switch (status) {
+//       case "answered": return "ANSWERED";
+//       case "unanswered": return "NOT ANSWERED";
+//       case "marked": return "MARKED FOR REVIEW";
+//       case "answeredMarked": return "ANSWERED & MARKED FOR REVIEW";
+//       default: return "NOT ANSWERED";
+//     }
+//   };
+
+//   try {
+//     const detailedAnswers = Object.entries(answers).map(([questionId, answerObj]) => {
+//       const originalQ = realQuestions.find(
+//         q => (q._id?.toString() === questionId || q.questionNumber?.toString() === questionId)
+//       );
+
+//       if (!originalQ) {
+//         console.warn(`⚠️ Warning: Question with ID ${questionId} not found`);
+//       }
+
+//       return {
+//         questionId,
+//         selectedAnswer: answerObj?.selectedOption || null,
+//         correctAnswer: answerObj?.correctAnswer || null,
+//         isCorrect: answerObj?.isCorrect || false,
+//         explanation: originalQ?.explanation || '',
+//         tags: originalQ?.tags || [],
+//         difficulty: originalQ?.difficulty || 'Medium',
+//         timeAllocated: originalQ?.timeAllocated || 0,
+//         markedForReview: markedForReview?.[questionId] || false,
+//         questionStatus: normalizeStatus(questionStatus?.[questionId]) || 'NOT ANSWERED',
+//       };
+//     });
+
+//     const totalMarks = realQuestions?.reduce((sum, q) => sum + (q.marks || 1), 0);
+//     const payload = {
+//       userId: user?.id || user?._id,
+//       testId: test?._id || testId,
+//       answers,
+//       score: typeof score === "number" ? score : 0,
+//       totalMarks,
+//       markedForReviewMap: markedForReview,
+//       questionStatusMap: questionStatus,
+//       detailedAnswers,
+//       questionTimeSpent // ✅ added
+//     };
+
+//     console.log("📤 Submitting final payload:", payload);
+
+//     const response = await axios.post(`${REACT_APP_API_URL}/api/userTestData/submit-test`, payload);
+//     const result = response.data;
+
+//     toast.success("Test submitted successfully!");
+//     setLastSubmittedResultId(result.resultId || result._id);
+
+//     // 🧹 Optional: clean up local storage
+//     localStorage.removeItem(timeKey);
+//     localStorage.removeItem(pauseKey);
+
+//     // ✅ Mark as completed to stop auto-save
+//     setStatus('completed');
+//     sessionStorage.setItem("fromSolutionPage", "true");
+//     navigate(`/test-overview/${test._id || testId}`, { replace: true });
+
+//   } catch (err) {
+//     const errorMsg = err.response?.data?.error || "Submission failed.";
+//     console.error("❌ Submission Error:", errorMsg);
+//     toast.error(errorMsg);
+//   }
+// };
+
+
+
+const handleFinishTest = async () => {
   const normalizeStatus = (status) => {
     switch (status) {
       case "answered": return "ANSWERED";
@@ -488,6 +562,13 @@ const totalMarks = realQuestions?.reduce((sum, q) => sum + (q.marks || 1), 0);
   };
 
   try {
+    // ✅ Flush current question's time before final submission
+    const currentQId = realQuestions[currentQuestionIndex]?._id || realQuestions[currentQuestionIndex]?.questionNumber;
+    setQuestionTimeSpent((prev) => ({
+      ...prev,
+      [currentQId]: (prev[currentQId] || 0) + timeSpentRef.current
+    }));
+
     const detailedAnswers = Object.entries(answers).map(([questionId, answerObj]) => {
       const originalQ = realQuestions.find(
         q => (q._id?.toString() === questionId || q.questionNumber?.toString() === questionId)
@@ -521,7 +602,7 @@ const totalMarks = realQuestions?.reduce((sum, q) => sum + (q.marks || 1), 0);
       markedForReviewMap: markedForReview,
       questionStatusMap: questionStatus,
       detailedAnswers,
-      questionTimeSpent // ✅ added
+      questionTimeSpent // ✅ now includes last question too
     };
 
     console.log("📤 Submitting final payload:", payload);
@@ -550,14 +631,36 @@ const totalMarks = realQuestions?.reduce((sum, q) => sum + (q.marks || 1), 0);
 
 
 
+
+// useEffect(() => {
+//   const handleBeforeUnload = async (e) => {
+//     e.preventDefault();
+//     await handleFinishTest(); // submits automatically
+//   };
+//   window.addEventListener("beforeunload", handleBeforeUnload);
+//   return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+// }, [answers, questionStatus, markedForReview]);
+
+
+
 useEffect(() => {
   const handleBeforeUnload = async (e) => {
     e.preventDefault();
-    await handleFinishTest(); // submits automatically
+
+    // ✅ Add time spent on current question before unload
+    const currentQId = realQuestions[currentQuestionIndex]?._id || realQuestions[currentQuestionIndex]?.questionNumber;
+    setQuestionTimeSpent((prev) => ({
+      ...prev,
+      [currentQId]: (prev[currentQId] || 0) + timeSpentRef.current
+    }));
+
+    await handleFinishTest(); // ✅ submit test
   };
+
   window.addEventListener("beforeunload", handleBeforeUnload);
   return () => window.removeEventListener("beforeunload", handleBeforeUnload);
-}, [answers, questionStatus, markedForReview]);
+}, [answers, questionStatus, markedForReview, currentQuestionIndex, realQuestions]);
+
 
 
   if (showBreakModal) {
