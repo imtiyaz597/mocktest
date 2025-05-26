@@ -1,4 +1,3 @@
-// src/pages/QuestionReportPage.js
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
@@ -46,65 +45,69 @@ const QuestionReportPage = () => {
 
   return (
     <div className="container mt-4">
-      <h2 className="fw-bold mb-3">{testTitle}</h2>
+      <div className="text-center mb-4">
+        <h2 className="fw-bold text-primary">{testTitle}</h2>
+      </div>
 
-      <div className="row mb-4">
-        <div className="col">
-          <strong>{totalMarks}</strong> Questions |{" "}
-          <strong>{correct}</strong> Correct |{" "}
-          <strong>{incorrect}</strong> Incorrect |{" "}
-          <strong>{skipped}</strong> Skipped |{" "}
-          <strong>{score}</strong> Score |{" "}
-          <strong>{formatTime(totalTime)}</strong> Time Taken
+      <div className="card shadow-sm border-0 mb-4">
+        <div className="card-body d-flex flex-wrap justify-content-between text-center">
+          <div><strong>{totalMarks}</strong> Questions</div>
+          <div><span className="badge bg-success">{correct} Correct</span></div>
+          <div><span className="badge bg-danger">{incorrect} Incorrect</span></div>
+          <div><span className="badge bg-secondary">{skipped} Skipped</span></div>
+          <div><strong>Score:</strong> {score}</div>
+          <div><strong>Time:</strong> {formatTime(totalTime)}</div>
         </div>
       </div>
 
-      <table className="table table-bordered">
-        <thead className="table-light">
-          <tr>
-            <th>#</th>
-            <th>Question</th>
-            <th>Your Answer</th>
-            <th>Correct Answer</th>
-            <th>Marks</th>
-            <th>Time Taken</th>
-          </tr>
-        </thead>
-        <tbody>
-          {detailedAnswers.map((ans, idx) => (
-            <tr key={ans.questionId}>
-              <td>{idx + 1}</td>
-              <td
-                dangerouslySetInnerHTML={{
-                    __html: typeof questions[idx]?.question === "string"
-                    ? questions[idx]?.question
-                    : JSON.stringify(questions[idx]?.question || "N/A")
-                }}
-                />
-
-              <td>
-                {Array.isArray(ans.selectedAnswer)
-                    ? ans.selectedAnswer.join(", ")
-                    : typeof ans.selectedAnswer === "object" && ans.selectedAnswer !== null
-                    ? JSON.stringify(ans.selectedAnswer)
-                    : ans.selectedAnswer || "--"}
+      <div className="table-responsive">
+        <table className="table table-bordered table-hover align-middle">
+          <thead className="table-light text-center">
+            <tr>
+              <th>#</th>
+              <th>Question</th>
+              <th>Your Answer</th>
+              <th>Correct Answer</th>
+              <th>Marks</th>
+              <th>Time Taken</th>
+            </tr>
+          </thead>
+          <tbody>
+            {detailedAnswers.map((ans, idx) => (
+              <tr key={ans.questionId}>
+                <td className="text-center">{idx + 1}</td>
+                <td>
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: typeof questions[idx]?.question === "string"
+                        ? questions[idx]?.question
+                        : JSON.stringify(questions[idx]?.question || "N/A")
+                    }}
+                  />
                 </td>
                 <td>
-                {Array.isArray(ans.correctAnswer)
+                  {Array.isArray(ans.selectedAnswer)
+                    ? ans.selectedAnswer.join(", ")
+                    : typeof ans.selectedAnswer === "object" && ans.selectedAnswer !== null
+                      ? JSON.stringify(ans.selectedAnswer)
+                      : ans.selectedAnswer || "--"}
+                </td>
+                <td>
+                  {Array.isArray(ans.correctAnswer)
                     ? ans.correctAnswer.join(", ")
                     : typeof ans.correctAnswer === "object" && ans.correctAnswer !== null
-                    ? JSON.stringify(ans.correctAnswer)
-                    : ans.correctAnswer || "--"}
+                      ? JSON.stringify(ans.correctAnswer)
+                      : ans.correctAnswer || "--"}
                 </td>
-
-              <td style={{ color: ans.isCorrect ? "green" : "red" }}>
-                {ans.isCorrect ? questions[idx]?.marks || 1 : 0}
-              </td>
-              <td>{formatTime(questionTimeSpent[ans.questionId] || 0)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                <td className="text-center" style={{ color: ans.isCorrect ? "green" : "red" }}>
+                  {ans.isCorrect ? questions[idx]?.marks || 1 : 0}
+                </td>
+                <td className="text-center">{formatTime(questionTimeSpent[ans.questionId] || 0)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
