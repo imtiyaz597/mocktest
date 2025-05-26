@@ -1075,14 +1075,28 @@ router.post('/userTestData/auto-save', async (req, res) => {
 // 🧠 Final Submit (manual or auto-on-exit)
 router.post('/userTestData/submit-test', async (req, res) => {
   try {
-    const { userId, testId, answers, markedForReviewMap, questionStatusMap, detailedAnswers, questionTimeSpent } = req.body;
+    const {
+      userId,
+      testId,
+      answers,
+      markedForReviewMap,
+      questionStatusMap,
+      detailedAnswers,
+      questionTimeSpent
+    } = req.body;
+
+    console.log("📥 [Submit-Test] Incoming payload keys:", Object.keys(req.body));
+    console.log("🕒 [Submit-Test] Incoming questionTimeSpent:", questionTimeSpent);
 
     if (!Array.isArray(detailedAnswers)) {
       return res.status(400).json({ error: 'Invalid detailedAnswers' });
     }
 
     const attempt = await StudentTestData.findOne({ userId, testId, status: 'in-progress' }).sort({ createdAt: -1 });
-    if (!attempt) return res.status(404).json({ error: 'No in-progress attempt found' });
+    if (!attempt) {
+      console.error("❌ No in-progress attempt found for", userId, testId);
+      return res.status(404).json({ error: 'No in-progress attempt found' });
+    }
 
     const test = await MockTest.findById(testId);
     const user = await User.findById(userId);
@@ -1142,6 +1156,7 @@ router.post('/userTestData/submit-test', async (req, res) => {
       if (ans.isCorrect) difficultyScore[level] += marks;
     }
 
+    // ✅ Merge time tracking
     if (questionTimeSpent && typeof questionTimeSpent === 'object') {
       if (!attempt.questionTimeSpent) attempt.questionTimeSpent = {};
       Object.entries(questionTimeSpent).forEach(([qid, time]) => {
@@ -1151,6 +1166,10 @@ router.post('/userTestData/submit-test', async (req, res) => {
         attempt.questionTimeSpent[qid] += time;
       });
     }
+
+    // ✅ Force correct time map into updatePayload
+    const mergedTimeSpent = questionTimeSpent || attempt.questionTimeSpent || {};
+    console.log("✅ [Submit-Test] Final merged questionTimeSpent:", mergedTimeSpent);
 
     const updatePayload = {
       answers,
@@ -1177,11 +1196,15 @@ router.post('/userTestData/submit-test', async (req, res) => {
       topicReport,
       difficultyStats,
       difficultyScore,
-      questionTimeSpent: attempt.questionTimeSpent || {} // ✅ include in final record
+      questionTimeSpent: mergedTimeSpent // ✅ final merged value injected
     };
 
+    console.log("📤 [Submit-Test] Saving updatePayload for attempt:", attempt._id);
     await StudentTestData.findByIdAndUpdate(attempt._id, updatePayload, { new: true });
+
+    console.log("✅ [Submit-Test] Submission complete for attempt:", attempt._id);
     res.status(200).json({ resultId: attempt._id });
+
   } catch (err) {
     console.error("❌ Submission error:", err);
     res.status(500).json({ error: "Submission failed" });
