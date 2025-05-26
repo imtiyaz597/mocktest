@@ -141,9 +141,13 @@ const totalTimeSpent = Object.values(report?.questionTimeSpent || {}).reduce((su
         <div className="container mb-4">
   <div className="d-flex justify-content-between align-items-center">
     <h4 className="fw-bold mb-3">Question Report</h4>
-    <button className="btn btn-link" onClick={() => navigate(`/solution/${lastSubmittedResultId || resultId}`)}>
-      View Report →
-    </button>
+    <button
+  className="btn btn-link"
+  onClick={() => navigate(`/report/${lastSubmittedResultId || resultId}`)}
+>
+  View Report →
+</button>
+
   </div>
   <div className="row g-3 text-center p-3 rounded border shadow-sm">
     <div className="col-6 col-md-2">

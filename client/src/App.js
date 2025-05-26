@@ -20,6 +20,7 @@ import SolutionPage from './components/MockTest/page/SolutionPage';
 import TestOverview from "./components/MockTest/page/TestOverview";
 import { ToastContainer } from "react-toastify";
 import FullReportPage from "./components/MockTest/page/FullReportPage";
+import QuestionReportPage from "./components/MockTest/page/QuestionReportPage";
 
 function App() {
     return (
@@ -109,6 +110,7 @@ const AppRoutes = () => {
             {/* <Route path="/report/:resultId" element={<FullReportPage />} /> */}
             <Route path="/test-overview/:testId" element={<TestOverview />} />
             <Route path="/full-report/:resultId" element={<FullReportPage />} />
+            <Route path="/report/:resultId" element={<QuestionReportPage />} />
 
 
 
