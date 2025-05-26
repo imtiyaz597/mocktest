@@ -27,6 +27,12 @@ const StudentTestDataSchema = new mongoose.Schema({
   score: { type: Number, required: true },
   status: { type: String, enum: ['in-progress', 'completed'], default: 'in-progress' },
   completedAt: { type: Date },
+  questionTimeSpent: {
+  type: Map,
+  of: Number, // in seconds
+  default: {},
+},
+
 
   // Rich reporting fields
   timeLeft: { type: Number, default: null }, // ⏱️ Add this to track remaining time

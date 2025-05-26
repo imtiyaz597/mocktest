@@ -507,6 +507,282 @@ router.get('/results/:id', async (req, res) => {
 
 // 🔁 Auto-save every second (called from frontend)
 // /routes/yourRoutes.js
+// router.post('/userTestData/auto-save', async (req, res) => {
+//   try {
+//     console.log("📥 Incoming auto-save payload:", req.body);
+//     const {
+//       attemptId,
+//       answers,
+//       markedForReviewMap,
+//       questionStatusMap,
+//       timeLeft,
+//       score,
+//       yourAccuracy,
+//       status,
+//       completedAt,
+//       currentQuestionIndex,
+//       totalMarks
+//     } = req.body;
+
+//     if (!attemptId){ 
+//       console.error("❌ Missing attemptId");
+//       return res.status(400).json({ error: 'Missing attemptId' })
+//     };
+
+//     const attempt = await StudentTestData.findById(attemptId);
+//     if (!attempt) {
+//       console.error("❌ Attempt not found for ID:", attemptId);
+//       return res.status(404).json({ error: 'Attempt not found' })};
+//    if (attempt.status === 'completed') {
+//   console.warn("⚠️ Attempt already submitted:", attemptId);
+//   return res.status(400).json({ error: 'Attempt already submitted', status: attempt.status });
+// }
+
+//     console.log("✅ Attempt found and valid, proceeding...");
+
+//     const test = await MockTest.findById(attempt.testId);
+//     const questionMap = new Map((test?.questions || []).map(q => [q._id.toString(), q]));
+
+//     const totalQuestions = [...questionMap.values()].filter(q => q.questionType && q.question?.trim()).length;
+
+//     let localScore = 0;
+//     let correct = 0;
+//     let attempted = 0;
+
+//     const detailedAnswers = [];
+
+//     const normalizeStatus = (status) => {
+//       switch (status) {
+//         case 'answered': return 'ANSWERED';
+//         case 'unanswered': return 'NOT ANSWERED';
+//         case 'marked': return 'MARKED FOR REVIEW';
+//         case 'answeredMarked': return 'ANSWERED & MARKED FOR REVIEW';
+//         default: return 'NOT ANSWERED';
+//       }
+//     };
+
+    
+
+
+//     for (const [questionId, answer] of Object.entries(answers || {})) {
+//       const originalQ = questionMap.get(questionId);
+//       if (!originalQ) continue;
+
+//       const selected = answer.selectedOption;
+//       const isCorrect = !!answer.isCorrect;
+//       const marks = originalQ?.marks || 1;
+
+//       if (selected !== undefined && selected !== null) attempted++;
+//       if (isCorrect) {
+//         correct++;
+//         localScore += marks;
+//       }
+
+//       detailedAnswers.push({
+//         questionId,
+//         selectedAnswer: selected,
+//         correctAnswer: answer.correctAnswer || [],
+//         isCorrect,
+//         explanation: originalQ?.explanation || '',
+//         tags: originalQ?.tags || [],
+//         difficulty: originalQ?.difficulty || 'Medium',
+//         timeAllocated: originalQ?.timeAllocated || 0,
+//         markedForReview: markedForReviewMap?.[questionId] || false,
+//         questionStatus: normalizeStatus(questionStatusMap?.[questionId]),
+//       });
+//     }
+
+//     const incorrect = attempted - correct;
+//     const skipped = totalQuestions - attempted;
+//     const calcAccuracy = totalQuestions > 0 ? ((correct / totalQuestions) * 100).toFixed(2) : "0.00";
+
+//     // Topic report
+//     const topicMap = {};
+//     for (const ans of detailedAnswers) {
+//       for (const tag of ans.tags || []) {
+//         if (!topicMap[tag]) topicMap[tag] = { tag, total: 0, correct: 0 };
+//         topicMap[tag].total += 1;
+//         if (ans.isCorrect) topicMap[tag].correct += 1;
+//       }
+//     }
+
+//     const topicReport = Object.values(topicMap);
+
+//     // Difficulty breakdown
+//     const difficultyStats = { Easy: 0, Medium: 0, Intense: 0 };
+//     const difficultyScore = { Easy: 0, Medium: 0, Intense: 0 };
+//     for (const ans of detailedAnswers) {
+//       const level = ans.difficulty || 'Medium';
+//       const qid = ans.questionId?.toString();
+//       const marks = questionMap.get(qid)?.marks || 1;
+//       difficultyStats[level] += 1;
+//       if (ans.isCorrect) difficultyScore[level] += marks;
+//     }
+
+//     // ✅ Store all fields (with fallback to local computation if missing)
+//     attempt.answers = answers || {};
+//     attempt.markedForReviewMap = markedForReviewMap || {};
+//     attempt.questionStatusMap = questionStatusMap || {};
+//     attempt.detailedAnswers = detailedAnswers;
+//     attempt.score = typeof score === 'number' ? score : localScore;
+//     attempt.correct = correct;
+//     attempt.incorrect = incorrect;
+//     attempt.skipped = skipped;
+//     attempt.yourAccuracy = yourAccuracy || calcAccuracy;
+//     attempt.topicReport = topicReport;
+//     attempt.difficultyStats = difficultyStats;
+//     attempt.difficultyScore = difficultyScore;
+//     attempt.timeLeft = typeof timeLeft === 'number' ? timeLeft : attempt.timeLeft;
+//     attempt.currentQuestionIndex = typeof currentQuestionIndex === 'number' ? currentQuestionIndex : 0;
+//     attempt.totalMarks = typeof totalMarks === 'number'
+//   ? totalMarks
+//   : [...questionMap.values()]
+//       .filter(q => q.questionType && q.question?.trim())
+//       .reduce((sum, q) => sum + (q.marks || 1), 0);
+
+
+//     // ✅ Only overwrite status/completedAt if not already completed
+//     if (attempt.status !== 'completed') {
+//       attempt.status = status || 'in-progress';
+//       attempt.completedAt = completedAt ?? null;
+//     }
+
+//     attempt.updatedAt = new Date();
+//     // ✅ Merge per-question time tracking without disturbing other logic
+// const { questionTimeSpent } = req.body;
+// if (questionTimeSpent && typeof questionTimeSpent === 'object') {
+//   if (!attempt.questionTimeSpent) attempt.questionTimeSpent = {};
+//   Object.entries(questionTimeSpent).forEach(([qid, time]) => {
+//     if (!attempt.questionTimeSpent[qid]) {
+//       attempt.questionTimeSpent[qid] = 0;
+//     }
+//     attempt.questionTimeSpent[qid] += time;
+//   });
+// }
+
+//      await attempt.save({ optimisticConcurrency: false });
+// ;
+
+//     res.status(200).json({ message: 'Auto-save successful' });
+
+//   } catch (err) {
+//     console.error("❌ Auto-save error:", err);
+//     res.status(500).json({ error: "Auto-save failed." });
+//   }
+// });
+
+// // 🧠 Final Submit (manual or auto-on-exit)
+// router.post('/userTestData/submit-test', async (req, res) => {
+//   try {
+//     const { userId, testId, answers, markedForReviewMap, questionStatusMap, detailedAnswers } = req.body;
+// const { questionTimeSpent } = req.body;
+
+//     if (!Array.isArray(detailedAnswers)) {
+//       return res.status(400).json({ error: 'Invalid detailedAnswers' });
+//     }
+
+//     const attempt = await StudentTestData.findOne({ userId, testId, status: 'in-progress' }).sort({ createdAt: -1 });
+//     if (!attempt) return res.status(404).json({ error: 'No in-progress attempt found' });
+
+//     const test = await MockTest.findById(testId);
+//     const user = await User.findById(userId);
+
+//     const questionMap = {};
+//     for (const q of test?.questions || []) {
+//       const qid = (q._id || q.questionNumber)?.toString();
+//       questionMap[qid] = q;
+//     }
+
+//     let score = 0;
+//     let correct = 0;
+//     let incorrect = 0;
+//     let attempted = 0;
+
+//     for (const ans of detailedAnswers) {
+//       const qid = ans.questionId?.toString();
+//       const q = questionMap[qid];
+
+//       const isAttempted = ans.selectedAnswer !== null && ans.selectedAnswer !== undefined;
+//       if (isAttempted) {
+//         attempted++;
+//         if (ans.isCorrect) {
+//           correct++;
+//           score += q?.marks || 1;  // ✅ pull marks from Excel-loaded question
+//         } else {
+//           incorrect++;
+//         }
+//       }
+//     }
+
+//     const totalQuestions = Object.keys(questionMap).length;
+//     const skipped = totalQuestions - attempted;
+//     const yourAccuracy = totalQuestions > 0 ? ((correct / totalQuestions) * 100).toFixed(2) : "0.00";
+
+//     // Rank calculation
+//     const allResults = await StudentTestData.find({ testId });
+//     const sorted = allResults.sort((a, b) => (b.score || 0) - (a.score || 0));
+//     const rank = sorted.findIndex(r => r._id.toString() === attempt._id.toString()) + 1;
+
+//     // Topic report
+//     const topicMap = {};
+//     for (const ans of detailedAnswers) {
+//       for (const tag of ans.tags || []) {
+//         if (!topicMap[tag]) topicMap[tag] = { tag, total: 0, correct: 0 };
+//         topicMap[tag].total += 1;
+//         if (ans.isCorrect) topicMap[tag].correct += 1;
+//       }
+//     }
+//     const topicReport = Object.values(topicMap);
+
+//     // Difficulty breakdown
+//     const difficultyStats = { Easy: 0, Medium: 0, Intense: 0 };
+//     const difficultyScore = { Easy: 0, Medium: 0, Intense: 0 };
+//     for (const ans of detailedAnswers) {
+//       const level = ans.difficulty || 'Medium';
+//       const qid = ans.questionId?.toString();
+//       const marks = questionMap[qid]?.marks || 1;
+//       difficultyStats[level] += 1;
+//       if (ans.isCorrect) difficultyScore[level] += marks;
+//     }
+
+//     const updatePayload = {
+//       answers,
+//       markedForReviewMap,
+//       questionStatusMap,
+//       detailedAnswers,
+//       score,
+//       status: 'completed',
+//       completedAt: new Date(),
+//       testTitle: test?.title || 'Mock Test',
+//       studentName: user?.name || "Unknown",
+//       totalMarks: test?.questions
+//   ?.filter(q => q.questionType && q.question?.trim())
+//   .reduce((sum, q) => sum + (q.marks || 1), 0),
+
+//       correct,
+//       incorrect,
+//       skipped,
+//       rank,
+//       topper: sorted[0]?.score || 0,
+//       average: sorted.length > 0
+//         ? (sorted.reduce((acc, r) => acc + (r.score || 0), 0) / sorted.length).toFixed(2)
+//         : "0.00",
+//       yourAccuracy,
+//       topicReport,
+//       difficultyStats,
+//       difficultyScore
+//     };
+
+//     await StudentTestData.findByIdAndUpdate(attempt._id, updatePayload, { new: true });
+//     res.status(200).json({ resultId: attempt._id });
+//   } catch (err) {
+//     console.error("❌ Submission error:", err);
+//     res.status(500).json({ error: "Submission failed" });
+//   }
+// });
+
+
+
 router.post('/userTestData/auto-save', async (req, res) => {
   try {
     console.log("📥 Incoming auto-save payload:", req.body);
@@ -521,7 +797,8 @@ router.post('/userTestData/auto-save', async (req, res) => {
       status,
       completedAt,
       currentQuestionIndex,
-      totalMarks
+      totalMarks,
+      questionTimeSpent // ✅ include this from request
     } = req.body;
 
     if (!attemptId){ 
@@ -534,9 +811,9 @@ router.post('/userTestData/auto-save', async (req, res) => {
       console.error("❌ Attempt not found for ID:", attemptId);
       return res.status(404).json({ error: 'Attempt not found' })};
    if (attempt.status === 'completed') {
-  console.warn("⚠️ Attempt already submitted:", attemptId);
-  return res.status(400).json({ error: 'Attempt already submitted', status: attempt.status });
-}
+      console.warn("⚠️ Attempt already submitted:", attemptId);
+      return res.status(400).json({ error: 'Attempt already submitted', status: attempt.status });
+    }
 
     console.log("✅ Attempt found and valid, proceeding...");
 
@@ -560,9 +837,6 @@ router.post('/userTestData/auto-save', async (req, res) => {
         default: return 'NOT ANSWERED';
       }
     };
-
-    
-
 
     for (const [questionId, answer] of Object.entries(answers || {})) {
       const originalQ = questionMap.get(questionId);
@@ -605,7 +879,6 @@ router.post('/userTestData/auto-save', async (req, res) => {
         if (ans.isCorrect) topicMap[tag].correct += 1;
       }
     }
-
     const topicReport = Object.values(topicMap);
 
     // Difficulty breakdown
@@ -619,7 +892,7 @@ router.post('/userTestData/auto-save', async (req, res) => {
       if (ans.isCorrect) difficultyScore[level] += marks;
     }
 
-    // ✅ Store all fields (with fallback to local computation if missing)
+    // ✅ Store all fields
     attempt.answers = answers || {};
     attempt.markedForReviewMap = markedForReviewMap || {};
     attempt.questionStatusMap = questionStatusMap || {};
@@ -635,21 +908,31 @@ router.post('/userTestData/auto-save', async (req, res) => {
     attempt.timeLeft = typeof timeLeft === 'number' ? timeLeft : attempt.timeLeft;
     attempt.currentQuestionIndex = typeof currentQuestionIndex === 'number' ? currentQuestionIndex : 0;
     attempt.totalMarks = typeof totalMarks === 'number'
-  ? totalMarks
-  : [...questionMap.values()]
-      .filter(q => q.questionType && q.question?.trim())
-      .reduce((sum, q) => sum + (q.marks || 1), 0);
+      ? totalMarks
+      : [...questionMap.values()]
+        .filter(q => q.questionType && q.question?.trim())
+        .reduce((sum, q) => sum + (q.marks || 1), 0);
 
-
-    // ✅ Only overwrite status/completedAt if not already completed
+    // ✅ Only update status if not already completed
     if (attempt.status !== 'completed') {
       attempt.status = status || 'in-progress';
       attempt.completedAt = completedAt ?? null;
     }
 
     attempt.updatedAt = new Date();
-     await attempt.save({ optimisticConcurrency: false });
-;
+
+    // ✅ Merge per-question time tracking
+    if (questionTimeSpent && typeof questionTimeSpent === 'object') {
+      if (!attempt.questionTimeSpent) attempt.questionTimeSpent = {};
+      Object.entries(questionTimeSpent).forEach(([qid, time]) => {
+        if (!attempt.questionTimeSpent[qid]) {
+          attempt.questionTimeSpent[qid] = 0;
+        }
+        attempt.questionTimeSpent[qid] += time;
+      });
+    }
+
+    await attempt.save({ optimisticConcurrency: false });
 
     res.status(200).json({ message: 'Auto-save successful' });
 
@@ -659,10 +942,11 @@ router.post('/userTestData/auto-save', async (req, res) => {
   }
 });
 
+
 // 🧠 Final Submit (manual or auto-on-exit)
 router.post('/userTestData/submit-test', async (req, res) => {
   try {
-    const { userId, testId, answers, markedForReviewMap, questionStatusMap, detailedAnswers } = req.body;
+    const { userId, testId, answers, markedForReviewMap, questionStatusMap, detailedAnswers, questionTimeSpent } = req.body;
 
     if (!Array.isArray(detailedAnswers)) {
       return res.status(400).json({ error: 'Invalid detailedAnswers' });
@@ -694,7 +978,7 @@ router.post('/userTestData/submit-test', async (req, res) => {
         attempted++;
         if (ans.isCorrect) {
           correct++;
-          score += q?.marks || 1;  // ✅ pull marks from Excel-loaded question
+          score += q?.marks || 1;
         } else {
           incorrect++;
         }
@@ -705,12 +989,10 @@ router.post('/userTestData/submit-test', async (req, res) => {
     const skipped = totalQuestions - attempted;
     const yourAccuracy = totalQuestions > 0 ? ((correct / totalQuestions) * 100).toFixed(2) : "0.00";
 
-    // Rank calculation
     const allResults = await StudentTestData.find({ testId });
     const sorted = allResults.sort((a, b) => (b.score || 0) - (a.score || 0));
     const rank = sorted.findIndex(r => r._id.toString() === attempt._id.toString()) + 1;
 
-    // Topic report
     const topicMap = {};
     for (const ans of detailedAnswers) {
       for (const tag of ans.tags || []) {
@@ -721,7 +1003,6 @@ router.post('/userTestData/submit-test', async (req, res) => {
     }
     const topicReport = Object.values(topicMap);
 
-    // Difficulty breakdown
     const difficultyStats = { Easy: 0, Medium: 0, Intense: 0 };
     const difficultyScore = { Easy: 0, Medium: 0, Intense: 0 };
     for (const ans of detailedAnswers) {
@@ -730,6 +1011,16 @@ router.post('/userTestData/submit-test', async (req, res) => {
       const marks = questionMap[qid]?.marks || 1;
       difficultyStats[level] += 1;
       if (ans.isCorrect) difficultyScore[level] += marks;
+    }
+
+    if (questionTimeSpent && typeof questionTimeSpent === 'object') {
+      if (!attempt.questionTimeSpent) attempt.questionTimeSpent = {};
+      Object.entries(questionTimeSpent).forEach(([qid, time]) => {
+        if (!attempt.questionTimeSpent[qid]) {
+          attempt.questionTimeSpent[qid] = 0;
+        }
+        attempt.questionTimeSpent[qid] += time;
+      });
     }
 
     const updatePayload = {
@@ -743,9 +1034,8 @@ router.post('/userTestData/submit-test', async (req, res) => {
       testTitle: test?.title || 'Mock Test',
       studentName: user?.name || "Unknown",
       totalMarks: test?.questions
-  ?.filter(q => q.questionType && q.question?.trim())
-  .reduce((sum, q) => sum + (q.marks || 1), 0),
-
+        ?.filter(q => q.questionType && q.question?.trim())
+        .reduce((sum, q) => sum + (q.marks || 1), 0),
       correct,
       incorrect,
       skipped,
@@ -757,7 +1047,8 @@ router.post('/userTestData/submit-test', async (req, res) => {
       yourAccuracy,
       topicReport,
       difficultyStats,
-      difficultyScore
+      difficultyScore,
+      questionTimeSpent: attempt.questionTimeSpent || {} // ✅ include in final record
     };
 
     await StudentTestData.findByIdAndUpdate(attempt._id, updatePayload, { new: true });
@@ -767,6 +1058,7 @@ router.post('/userTestData/submit-test', async (req, res) => {
     res.status(500).json({ error: "Submission failed" });
   }
 });
+
 
 
 // 🔁 Start attempt (called only if no in-progress exists)
