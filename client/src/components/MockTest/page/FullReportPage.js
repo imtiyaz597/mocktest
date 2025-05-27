@@ -404,60 +404,58 @@ const FullReportPage = ({
 
         {/* // time analysis */}
 
-    <div className="col-md-4">
-  <div className="card border-0 shadow-sm h-100 text-center">
-    <div className="card-body">
-      <div className="d-flex justify-content-between align-items-center mb-2">
-        <h5 className="fw-bold mb-0">Time Analysis</h5>
-        <button
-          className="btn btn-link btn-sm text-decoration-none"
-          onClick={() =>
-            window.open(`/report/${lastSubmittedResultId || resultId}`, '_blank')
-          }
-        >
-          View Report →
-        </button>
-      </div>
-      <div style={{ height: 160, width: 160, margin: "0 auto" }}>
-        <Pie
-          data={{
-            labels: ['Correct', 'Incorrect', 'Skipped'],
-            datasets: [{
-              data: [
-                correct,
-                incorrect,
-                skipped
-              ],
-              backgroundColor: ['#28a745', '#dc3545', '#6c757d'],
-              borderWidth: 1,
-            }]
-          }}
-          options={{
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: { display: false },
-              tooltip: {
-                callbacks: {
-                  label: (ctx) => `${ctx.label}: ${ctx.raw}`
+    <div className="row mt-5 g-4">
+  {/* Time Analysis */}
+  <div className="col-md-4">
+    <div className="card border-0 shadow-sm h-100 text-center">
+      <div className="card-body">
+        <div className="d-flex justify-content-between align-items-center mb-2">
+          <h5 className="fw-bold mb-0">Time Analysis</h5>
+          <button
+            className="btn btn-link btn-sm text-decoration-none"
+            onClick={() =>
+              navigate(`/report/${lastSubmittedResultId || resultId}`)
+            }
+          >
+            View Report →
+          </button>
+        </div>
+        <div style={{ height: 160, width: 160, margin: "0 auto" }}>
+          <Pie
+            data={{
+              labels: ['Correct', 'Incorrect', 'Skipped'],
+              datasets: [{
+                data: [correct, incorrect, skipped],
+                backgroundColor: ['#28a745', '#dc3545', '#6c757d'],
+                borderWidth: 1,
+              }]
+            }}
+            options={{
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  callbacks: {
+                    label: (ctx) => `${ctx.label}: ${ctx.raw}`
+                  }
                 }
               }
-            }
-          }}
-        />
+            }}
+          />
+        </div>
+        <p className="mt-3 mb-1 fw-semibold">{formatTime(totalTimeSpent)}</p>
+        <p className="text-muted small">Total Time Spent</p>
+        <ul className="list-unstyled small text-start mx-auto" style={{ maxWidth: '180px' }}>
+          <li><span className="text-success">On Correct Answers:</span> {Math.round(correct / totalMarks * 100)}%</li>
+          <li><span className="text-danger">On Incorrect Answers:</span> {Math.round(incorrect / totalMarks * 100)}%</li>
+          <li><span className="text-secondary">On Skipped:</span> {Math.round(skipped / totalMarks * 100)}%</li>
+        </ul>
       </div>
-      <p className="mt-3 mb-1 fw-semibold">{formatTime(totalTimeSpent)}</p>
-      <p className="text-muted small">Total Time Spent</p>
-      <ul className="list-unstyled small text-start mx-auto" style={{ maxWidth: '180px' }}>
-        <li><span className="text-success">On Correct Answers:</span> {Math.round(correct / totalMarks * 100)}%</li>
-        <li><span className="text-danger">On Incorrect Answers:</span> {Math.round(incorrect / totalMarks * 100)}%</li>
-        <li><span className="text-secondary">On Skipped:</span> {Math.round(skipped / totalMarks * 100)}%</li>
-      </ul>
     </div>
   </div>
 
-
-
+  {/* Score Analysis */}
   <div className="col-md-8">
     <div className="card border-0 shadow-sm h-100">
       <div className="card-body">
@@ -504,6 +502,7 @@ const FullReportPage = ({
     </div>
   </div>
 </div>
+
 
 
       </div>
