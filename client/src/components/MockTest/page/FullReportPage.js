@@ -402,50 +402,109 @@ const FullReportPage = ({
           </div>
         </div>
 
-        // time analysis
+        {/* // time analysis */}
 
-        <div className="card shadow-sm h-100">
-  <div className="card-body text-center">
-    <h5 className="fw-bold mb-3">Time Analysis</h5>
-    <div style={{ height: "180px", width: "180px", margin: "0 auto" }}>
-      <Pie
-        data={{
-          labels: ['On Correct Answers', 'On Incorrect Answers', 'On Skipped'],
-          datasets: [{
-            data: [
-              correct / totalMarks * 100,
-              incorrect / totalMarks * 100,
-              skipped / totalMarks * 100
-            ],
-            backgroundColor: ['#28a745', '#dc3545', '#6c757d'],
-            borderWidth: 1,
-          }]
-        }}
-        options={{
-          responsive: false,
-          maintainAspectRatio: true,
-          plugins: {
-            legend: { display: false },
-            tooltip: {
-              callbacks: {
-                label: (context) =>
-                  `${context.label}: ${Math.round(context.raw)}%`
+    <div className="col-md-4">
+  <div className="card border-0 shadow-sm h-100 text-center">
+    <div className="card-body">
+      <div className="d-flex justify-content-between align-items-center mb-2">
+        <h5 className="fw-bold mb-0">Time Analysis</h5>
+        <button
+          className="btn btn-link btn-sm text-decoration-none"
+          onClick={() =>
+            window.open(`/report/${lastSubmittedResultId || resultId}`, '_blank')
+          }
+        >
+          View Report →
+        </button>
+      </div>
+      <div style={{ height: 160, width: 160, margin: "0 auto" }}>
+        <Pie
+          data={{
+            labels: ['Correct', 'Incorrect', 'Skipped'],
+            datasets: [{
+              data: [
+                correct,
+                incorrect,
+                skipped
+              ],
+              backgroundColor: ['#28a745', '#dc3545', '#6c757d'],
+              borderWidth: 1,
+            }]
+          }}
+          options={{
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: (ctx) => `${ctx.label}: ${ctx.raw}`
+                }
               }
             }
-          }
-        }}
-      />
+          }}
+        />
+      </div>
+      <p className="mt-3 mb-1 fw-semibold">{formatTime(totalTimeSpent)}</p>
+      <p className="text-muted small">Total Time Spent</p>
+      <ul className="list-unstyled small text-start mx-auto" style={{ maxWidth: '180px' }}>
+        <li><span className="text-success">On Correct Answers:</span> {Math.round(correct / totalMarks * 100)}%</li>
+        <li><span className="text-danger">On Incorrect Answers:</span> {Math.round(incorrect / totalMarks * 100)}%</li>
+        <li><span className="text-secondary">On Skipped:</span> {Math.round(skipped / totalMarks * 100)}%</li>
+      </ul>
     </div>
+  </div>
 
-    <p className="mt-3 fs-5 fw-semibold">{formatTime(totalTimeSpent)}</p>
-    <p className="text-muted small">Total Time Spent</p>
-    <ul className="list-unstyled small">
-      <li><span className="text-success">On Correct Answers:</span> {Math.round(correct / totalMarks * 100)}%</li>
-      <li><span className="text-danger">On Incorrect Answers:</span> {Math.round(incorrect / totalMarks * 100)}%</li>
-      <li><span className="text-secondary">On Skipped:</span> {Math.round(skipped / totalMarks * 100)}%</li>
-    </ul>
+
+
+  <div className="col-md-8">
+    <div className="card border-0 shadow-sm h-100">
+      <div className="card-body">
+        <h5 className="fw-bold">Score Analysis</h5>
+        <div className="d-flex justify-content-between align-items-center mb-2">
+          <div className="small">
+            <span className="me-3 text-success">🟩 Correct {correct}</span>
+            <span className="me-3 text-danger">🟥 Incorrect {incorrect}</span>
+            <span className="text-muted">⬜ Skipped {skipped}</span>
+          </div>
+          <div className="text-muted small">Total Questions <strong>{totalMarks}</strong></div>
+        </div>
+        <Bar
+          data={{
+            labels: ['Correct', 'Incorrect', 'Skipped'],
+            datasets: [{
+              label: 'Attempts',
+              data: [correct, incorrect, skipped],
+              backgroundColor: ['#28a745', '#dc3545', '#6c757d'],
+              barThickness: 20,
+            }]
+          }}
+          options={{
+            responsive: true,
+            indexAxis: 'y',
+            plugins: {
+              legend: { display: false }
+            },
+            scales: {
+              x: {
+                beginAtZero: true,
+                ticks: { stepSize: 1 }
+              }
+            }
+          }}
+        />
+        <p className="mt-4 text-muted small text-center">
+          You have scored <strong>{correct} marks</strong> for correct answers, 
+          missed <strong>{incorrect} marks</strong> on incorrect answers, 
+          lost <strong>0 marks</strong> due to negative marking and 
+          <strong> {skipped} marks</strong> by skipping questions.
+        </p>
+      </div>
+    </div>
   </div>
 </div>
+
 
       </div>
     );
