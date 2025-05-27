@@ -21,6 +21,7 @@ import TestOverview from "./components/MockTest/page/TestOverview";
 import { ToastContainer } from "react-toastify";
 import FullReportPage from "./components/MockTest/page/FullReportPage";
 import QuestionReportPage from "./components/MockTest/page/QuestionReportPage";
+import ScoreTimeReportPage from "./components/MockTest/page/ScoreTimeReportPage";
 
 function App() {
     return (
