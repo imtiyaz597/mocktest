@@ -112,7 +112,7 @@ const AppRoutes = () => {
             <Route path="/test-overview/:testId" element={<TestOverview />} />
             <Route path="/full-report/:resultId" element={<FullReportPage />} />
             <Route path="/report/:resultId" element={<QuestionReportPage />} />
-            <Route path="/report/:resultId" element={<ScoreTimeReportPage />} />
+            <Route path="/report/:resultId/score-time" element={<ScoreTimeReportPage />} />
 
 
 

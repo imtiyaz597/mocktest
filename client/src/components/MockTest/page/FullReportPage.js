@@ -414,7 +414,7 @@ const FullReportPage = ({
           <button
             className="btn btn-link btn-sm text-decoration-none"
             onClick={() =>
-              navigate(`/report/${lastSubmittedResultId || resultId}`)
+              navigate(`/report/${lastSubmittedResultId || resultId}/score-time`)
             }
           >
             View Report →
