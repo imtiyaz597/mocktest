@@ -347,7 +347,7 @@ const FullReportPage = ({
         </div>
 
         {/* Rank Board Section */}
-        {/* 🏆 Leaderboard Top 3 */}
+       {/* 🏆 Leaderboard Top 3 */}
 <div className="mt-5">
   <h4 className="fw-bold mb-4 text-primary">Where Do You Stand?</h4>
   <div className="row g-3 mb-4 text-center">
@@ -376,97 +376,87 @@ const FullReportPage = ({
 </div>
 
 {/* 📊 You vs Topper vs Average Bar Chart */}
-<div className="container-fluid mt-4">
-  <h6 className="fw-semibold mb-3">Score - You Vs Topper Vs Average</h6>
-  <div className="row">
-    <div className="col-12">
-      <div className="bg-white p-3 rounded shadow-sm">
-        <div style={{ height: "280px", width: "100%" }}>
-          <Bar
-            data={{
-              labels: ["Topper", "Average", "You"],
-              datasets: [
-                {
-                  label: "Score",
-                  data: [
-                    report.topperScore || 0,
-                    report.averageScore || 0,
-                    report.score || 0,
-                  ],
-                  backgroundColor: ["#80dfff", "#e6d97e", "#dd91c6"],
-                  barThickness: 25,
-                },
-              ],
-            }}
-            options={{
-              responsive: true,
-              indexAxis: "y",
-              plugins: { legend: { display: false } },
-              scales: {
-                x: {
-                  min: 0,
-                  max: report.totalMarks || 100,
-                  title: { display: true, text: "Score" },
-                },
-              },
-            }}
-          />
-        </div>
-        <div className="text-muted small mt-3 text-center">
-          <span className="me-3 text-info">
-            Topper <strong>{report.topperScore || 0}/{report.totalMarks}</strong>
-          </span>
-          <span className="me-3 text-warning">
-            Average <strong>{report.averageScore || 0}/{report.totalMarks}</strong>
-          </span>
-          <span className="text-danger">
-            You <strong>{report.score || 0}/{report.totalMarks}</strong>
-          </span>
-        </div>
-      </div>
-    </div>
+<div className="container-fluid mt-4 px-0">
+  <h6 className="fw-semibold mb-3 px-3">Score - You Vs Topper Vs Average</h6>
+  <div style={{ height: "280px", width: "100vw" }}>
+    <Bar
+      data={{
+        labels: ["Topper", "Average", "You"],
+        datasets: [
+          {
+            label: "Score",
+            data: [
+              report.topperScore || 0,
+              report.averageScore || 0,
+              report.score || 0,
+            ],
+            backgroundColor: ["#80dfff", "#e6d97e", "#dd91c6"],
+            barThickness: 25,
+          },
+        ],
+      }}
+      options={{
+        responsive: true,
+        indexAxis: "y",
+        plugins: { legend: { display: false } },
+        scales: {
+          x: {
+            min: 0,
+            max: report.totalMarks || 100,
+            title: { display: true, text: "Score" },
+          },
+        },
+      }}
+    />
+  </div>
+  <div className="text-muted small mt-3 text-center">
+    <span className="me-3 text-info">
+      Topper <strong>{report.topperScore || 0}/{report.totalMarks}</strong>
+    </span>
+    <span className="me-3 text-warning">
+      Average <strong>{report.averageScore || 0}/{report.totalMarks}</strong>
+    </span>
+    <span className="text-danger">
+      You <strong>{report.score || 0}/{report.totalMarks}</strong>
+    </span>
   </div>
 </div>
 
 {/* 📈 Accuracy Chart */}
-<div className="container-fluid mt-5">
-  <h6 className="fw-semibold mb-3">Accuracy - You Vs Topper Vs Average</h6>
-  <div className="row">
-    <div className="col-12">
-      <div style={{ height: "280px", width: "100%" }}>
-        <Bar
-          data={{
-            labels: ["Topper", "Average", "You"],
-            datasets: [
-              {
-                label: "Accuracy (%)",
-                data: [
-                  parseFloat(report.topperAccuracy || 0),
-                  parseFloat(report.averageAccuracy || 0),
-                  parseFloat(report.yourAccuracy || 0),
-                ],
-                backgroundColor: ["#28a745", "#ffc107", "#007bff"],
-                barThickness: 25,
-              },
+<div className="container-fluid mt-5 px-0">
+  <h6 className="fw-semibold mb-3 px-3">Accuracy - You Vs Topper Vs Average</h6>
+  <div style={{ height: "280px", width: "100vw" }}>
+    <Bar
+      data={{
+        labels: ["Topper", "Average", "You"],
+        datasets: [
+          {
+            label: "Accuracy (%)",
+            data: [
+              parseFloat(report.topperAccuracy || 0),
+              parseFloat(report.averageAccuracy || 0),
+              parseFloat(report.yourAccuracy || 0),
             ],
-          }}
-          options={{
-            responsive: true,
-            indexAxis: "y",
-            plugins: {
-              legend: { display: false },
-            },
-            scales: {
-              x: {
-                min: 0,
-                max: 100,
-                title: { display: true, text: "Accuracy (%)" },
-              },
-            },
-          }}
-        />
-      </div>
-    </div>
+            backgroundColor: ["#28a745", "#ffc107", "#007bff"],
+            barThickness: 25,
+          },
+        ],
+      }}
+      options={{
+        responsive: true,
+        indexAxis: "y",
+        plugins: {
+          legend: { display: false },
+        },
+        scales: {
+          x: {
+            min: 0,
+            max: 100,
+            title: { display: true, text: "Accuracy (%)" },
+          },
+        },
+      }}
+    />
   </div>
   <div className="text-muted small mt-3 text-center">
     <span className="me-3 text-success">Topper: <strong>{report.topperAccuracy || 0}%</strong></span>
@@ -511,6 +501,7 @@ const FullReportPage = ({
     />
   </div>
 </div>
+
 
 
 
