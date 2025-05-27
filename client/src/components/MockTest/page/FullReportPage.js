@@ -402,77 +402,48 @@ const FullReportPage = ({
           </div>
         </div>
 
-        <div className="container my-5">
-  <h3 className="fw-bold mb-4">How did you perform?</h3>
-  <div className="row g-4">
-    <div className="col-md-6">
-      <div className="card shadow-sm">
-        <div className="card-body text-center">
-          <h5 className="fw-bold mb-3">Time Analysis</h5>
-          <Pie
-            data={{
-              labels: ['On Correct Answers', 'On Incorrect Answers', 'On Skipped'],
-              datasets: [{
-                data: [
-                  correct / totalMarks * 100,
-                  incorrect / totalMarks * 100,
-                  skipped / totalMarks * 100
-                ],
-                backgroundColor: ['#28a745', '#dc3545', '#6c757d'],
-                borderWidth: 1,
-              }]
-            }}
-            options={{ plugins: { legend: { display: false } }, maintainAspectRatio: false }}
-            height={180}
-          />
-          <p className="mt-3 fs-5 fw-semibold">{formatTime(totalTimeSpent)}</p>
-          <p className="text-muted small">Total Time Spent</p>
-          <ul className="list-unstyled small">
-            <li><span className="text-success">On Correct Answers:</span> {Math.round(correct / totalMarks * 100)}%</li>
-            <li><span className="text-danger">On Incorrect Answers:</span> {Math.round(incorrect / totalMarks * 100)}%</li>
-            <li><span className="text-secondary">On Skipped:</span> {Math.round(skipped / totalMarks * 100)}%</li>
-          </ul>
-        </div>
-      </div>
-    </div>
+        // time analysis
 
-    <div className="col-md-6">
-      <div className="card shadow-sm">
-        <div className="card-body">
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <h5 className="fw-bold mb-0">Score Analysis</h5>
-            <span className="text-muted small">Total Questions <strong>{totalMarks}</strong></span>
-          </div>
-          <Bar
-            data={{
-              labels: ['Correct', 'Incorrect', 'Skipped'],
-              datasets: [{
-                label: 'Attempts',
-                data: [correct, incorrect, skipped],
-                backgroundColor: ['#28a745', '#dc3545', '#6c757d']
-              }]
-            }}
-            options={{
-              indexAxis: 'y',
-              plugins: { legend: { display: false } },
-              scales: {
-                x: { beginAtZero: true, ticks: { stepSize: 1 } }
+        <div className="card shadow-sm h-100">
+  <div className="card-body text-center">
+    <h5 className="fw-bold mb-3">Time Analysis</h5>
+    <div style={{ height: "180px", width: "180px", margin: "0 auto" }}>
+      <Pie
+        data={{
+          labels: ['On Correct Answers', 'On Incorrect Answers', 'On Skipped'],
+          datasets: [{
+            data: [
+              correct / totalMarks * 100,
+              incorrect / totalMarks * 100,
+              skipped / totalMarks * 100
+            ],
+            backgroundColor: ['#28a745', '#dc3545', '#6c757d'],
+            borderWidth: 1,
+          }]
+        }}
+        options={{
+          responsive: false,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: (context) =>
+                  `${context.label}: ${Math.round(context.raw)}%`
               }
-            }}
-            height={180}
-          />
-
-          <div className="mt-4 text-muted small">
-            <p>
-              You have scored <strong>{correct} marks</strong> for correct answers,
-              missed <strong>{incorrect} marks</strong> on incorrect answers,
-              lost <strong>0 marks</strong> due to negative marking and
-              <strong> {skipped} marks</strong> by skipping questions.
-            </p>
-          </div>
-        </div>
-      </div>
+            }
+          }
+        }}
+      />
     </div>
+
+    <p className="mt-3 fs-5 fw-semibold">{formatTime(totalTimeSpent)}</p>
+    <p className="text-muted small">Total Time Spent</p>
+    <ul className="list-unstyled small">
+      <li><span className="text-success">On Correct Answers:</span> {Math.round(correct / totalMarks * 100)}%</li>
+      <li><span className="text-danger">On Incorrect Answers:</span> {Math.round(incorrect / totalMarks * 100)}%</li>
+      <li><span className="text-secondary">On Skipped:</span> {Math.round(skipped / totalMarks * 100)}%</li>
+    </ul>
   </div>
 </div>
 
