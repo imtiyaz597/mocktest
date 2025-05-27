@@ -317,6 +317,7 @@ const FullReportPage = ({
 {/* You vs Topper vs Average Bar Chart */}
 <div className="container-fluid mt-5">
   <h6 className="fw-semibold mb-3">Score - You Vs Topper Vs Average</h6>
+
   <div style={{ height: "280px", width: "100%" }}>
     <Bar
       data={{
@@ -350,14 +351,20 @@ const FullReportPage = ({
       }}
     />
   </div>
-</div>
 
-  <div className="text-muted small mt-2 text-center">
-    <span className="me-3 text-info">Topper {report.topperScore || 0}/{report.totalMarks}</span>
-    <span className="me-3 text-warning">Average {report.averageScore || 0}/{report.totalMarks}</span>
-    <span className="text-danger">You {report.score || 0}/{report.totalMarks}</span>
+  <div className="text-muted small mt-3 text-center">
+    <span className="me-3 text-info">
+      Topper <strong>{report.topperScore || 0}/{report.totalMarks}</strong>
+    </span>
+    <span className="me-3 text-warning">
+      Average <strong>{report.averageScore || 0}/{report.totalMarks}</strong>
+    </span>
+    <span className="text-danger">
+      You <strong>{report.score || 0}/{report.totalMarks}</strong>
+    </span>
   </div>
 </div>
+
 
 </div>
 
