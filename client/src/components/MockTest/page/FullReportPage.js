@@ -476,9 +476,9 @@ const FullReportPage = ({
 </div>
 
 {/* 🎯 Difficulty Level Breakdown */}
-<div className="container-fluid mt-5">
-  <h6 className="fw-semibold mb-3">Your Score by Difficulty Level</h6>
-  <div style={{ height: "280px", width: "100%" }}>
+<div className="container-fluid mt-5 px-0">
+  <h6 className="fw-semibold mb-3 px-3">Your Score by Difficulty Level</h6>
+  <div style={{ height: "280px", width: "100vw" }}>
     <Bar
       data={{
         labels: ["Easy", "Medium", "Intense"],
@@ -511,6 +511,7 @@ const FullReportPage = ({
     />
   </div>
 </div>
+
 
 
       </div>
