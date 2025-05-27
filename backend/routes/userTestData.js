@@ -509,6 +509,134 @@ const User = require('../models/User');
 // });
 
 
+// router.get('/results/:id', async (req, res) => {
+//   try {
+//     const result = await StudentTestData.findById(req.params.id);
+//     if (!result) return res.status(404).json({ error: 'Result not found' });
+
+//     const test = await MockTest.findById(result.testId);
+//     const allResults = await StudentTestData.find({ testId: result.testId });
+
+//     const totalQuestions = result.detailedAnswers.length;
+//     const correct = result.detailedAnswers.filter(a => a.isCorrect).length;
+//     const incorrect = result.detailedAnswers.filter(a => a.selectedAnswer && !a.isCorrect).length;
+//     const skipped = result.detailedAnswers.filter(a => a.selectedAnswer === null).length;
+//     const score = result.score || 0;
+
+//     const sorted = allResults.sort((a, b) => (b.score || 0) - (a.score || 0));
+//     const rank = sorted.findIndex(r => r._id.toString() === result._id.toString()) + 1;
+//     const topper = sorted[0]?.score || 0;
+//     const average = sorted.length > 0
+//       ? (sorted.reduce((acc, r) => acc + (r.score || 0), 0) / sorted.length).toFixed(2)
+//       : "0.00";
+
+//     const topperCorrectCount = sorted[0]?.detailedAnswers?.filter(a => a.isCorrect).length || 0;
+//     const topperAccuracy = totalQuestions > 0
+//       ? ((topperCorrectCount / totalQuestions) * 100).toFixed(2)
+//       : "0.00";
+
+//     const averageCorrectCount = sorted.reduce((acc, r) => {
+//       if (!r.detailedAnswers) return acc;
+//       return acc + r.detailedAnswers.filter(a => a.isCorrect).length;
+//     }, 0);
+//     const averageAccuracy = (sorted.length > 0 && totalQuestions > 0)
+//       ? ((averageCorrectCount / (sorted.length * totalQuestions)) * 100).toFixed(2)
+//       : "0.00";
+
+//     const topicMap = {};
+//     for (const ans of result.detailedAnswers) {
+//       for (const tag of ans.tags || []) {
+//         if (!topicMap[tag]) topicMap[tag] = { tag, total: 0, correct: 0 };
+//         topicMap[tag].total += 1;
+//         if (ans.isCorrect) topicMap[tag].correct += 1;
+//       }
+//     }
+//     const topicReport = Object.values(topicMap);
+
+//     const difficultyStats = { Easy: 0, Medium: 0, Intense: 0 };
+//     const difficultyScore = { Easy: 0, Medium: 0, Intense: 0 };
+//     for (const ans of result.detailedAnswers) {
+//       const level = ans.difficulty || 'Medium';
+//       difficultyStats[level] += 1;
+//       if (ans.isCorrect) difficultyScore[level] += (ans.marks || 1);
+//     }
+
+//     const enrichedQuestions = (test?.questions || []).map((q) => {
+//       const qId = q._id?.toString() || q.questionNumber?.toString();
+//       const attempt = result.answers?.[qId];
+
+//       return {
+//         ...q.toObject?.() || q,
+//         selectedAnswer: attempt?.selectedOption ?? null,
+//         correctAnswer: q.correctAnswer || null,
+//         isCorrect: attempt?.isCorrect ?? null,
+//         explanation: q.explanation || null,
+//         options: q.options || [],
+//         definitions: q.questionType === 'Drag and Drop' ? q.definitions || [] : undefined,
+//         terms: q.questionType === 'Drag and Drop' ? q.terms || [] : undefined,
+//         answer: q.questionType === 'Drag and Drop' ? q.answer || [] : undefined,
+//       };
+//     });
+
+//     const yourAccuracy = totalQuestions > 0 ? ((correct / totalQuestions) * 100).toFixed(2) : "0.00";
+
+//     // ✅ Safely calculate totalTimeSpent (exclude non-question keys)
+//     const totalTimeSpent = Object.entries(result.questionTimeSpent || {})
+//       .filter(([key]) => !["timeLeft", "currentQuestionIndex"].includes(key))
+//       .reduce((sum, [, seconds]) => sum + seconds, 0);
+
+//     await StudentTestData.findByIdAndUpdate(req.params.id, {
+//       testTitle: test?.title || 'Mock Test',
+//       totalMarks: test?.questions?.length || 0,
+//       correct,
+//       incorrect,
+//       skipped,
+//       rank,
+//       topper,
+//       average,
+//       yourAccuracy,
+//       topperAccuracy,
+//       averageAccuracy,
+//       topicReport,
+//       difficultyStats,
+//       difficultyScore,
+//     });
+
+//     res.json({
+//       _id: result._id,
+//       testTitle: test?.title || 'Mock Test',
+//       totalMarks: test?.questions?.length || 0,
+//       score,
+//       correct,
+//       incorrect,
+//       skipped,
+//       rank,
+//       topper,
+//       average,
+//       yourAccuracy,
+//       topperAccuracy,
+//       averageAccuracy,
+//       topicReport,
+//       difficultyStats,
+//       difficultyScore,
+//       questions: enrichedQuestions,
+//       answers: result?.answers || {},
+//       detailedAnswers: result?.detailedAnswers || [],
+//       questionTimeSpent: result?.questionTimeSpent || {},
+//       totalTimeSpent // ✅ Added field
+//     });
+
+//   } catch (err) {
+//     console.error('❌ Error in GET /api/results/:id', err);
+//     res.status(500).json({ error: 'Something went wrong.' });
+//   }
+// });
+
+
+
+
+
+
 router.get('/results/:id', async (req, res) => {
   try {
     const result = await StudentTestData.findById(req.params.id);
@@ -585,6 +713,14 @@ router.get('/results/:id', async (req, res) => {
       .filter(([key]) => !["timeLeft", "currentQuestionIndex"].includes(key))
       .reduce((sum, [, seconds]) => sum + seconds, 0);
 
+    // ✅ Add top 3 names and scores
+    const topperName = sorted[0]?.studentName || "Topper";
+    const secondName = sorted[1]?.studentName || "Second";
+    const thirdName = sorted[2]?.studentName || "Third";
+
+    const secondScore = sorted[1]?.score || 0;
+    const thirdScore = sorted[2]?.score || 0;
+
     await StudentTestData.findByIdAndUpdate(req.params.id, {
       testTitle: test?.title || 'Mock Test',
       totalMarks: test?.questions?.length || 0,
@@ -623,7 +759,14 @@ router.get('/results/:id', async (req, res) => {
       answers: result?.answers || {},
       detailedAnswers: result?.detailedAnswers || [],
       questionTimeSpent: result?.questionTimeSpent || {},
-      totalTimeSpent // ✅ Added field
+      totalTimeSpent,
+      topperName,
+      secondName,
+      thirdName,
+      topperScore: topper,
+      secondScore,
+      thirdScore,
+      averageScore: average
     });
 
   } catch (err) {
