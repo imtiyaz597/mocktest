@@ -451,7 +451,7 @@ const FullReportPage = ({
           <div className="d-flex justify-content-between align-items-center mb-2">
             <h5 className="fw-bold mb-0">Score Analysis</h5>
             <button
-              className="btn btn-link btn-sm text-decoration-none"
+              className="btn btn-outline-secondary btn-sm"
               onClick={() =>
                 navigate(`/report/${lastSubmittedResultId || resultId}/score-time`)
               }
